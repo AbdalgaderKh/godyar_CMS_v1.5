@@ -22,5 +22,20 @@
     "stan": "phpstan analyse --ansi",
     "psalm": "psalm --show-info=true",
     "test": "phpunit"
-  }
+  },
+  "description": "Godyar CMS - نظام إدارة محتوى للأخبار (News CMS)",
+  "license": "MIT",
+  "homepage": "https://godyar.org",
+  "support": {
+    "issues": "https://github.com/AbdalgaderKh/godyar_CMS_v1.5/issues",
+    "email": "abdalgaderkh@gmail.com"
+  },
+  "keywords": [
+    "cms",
+    "news",
+    "php",
+    "godyar",
+    "rtl",
+    "multilingual"
+  ]
 }
