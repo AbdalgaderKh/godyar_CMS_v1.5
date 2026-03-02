@@ -36,7 +36,7 @@ function gdy_css(string $path, array $attrs = []): void {
         $extra .= ' ' . htmlspecialchars((string)$k, ENT_QUOTES, 'UTF-8')
                . '="' . htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8') . '"';
     }
-    echo "<link rel="stylesheet" href="{$href}"{$extra}>" . "\n";
+    echo '<link rel="stylesheet" href="' . $href . '"' . $extra . ">\n";
 }
 
 function gdy_js(string $path, ?string $nonce = null, array $attrs = []): void {
@@ -57,5 +57,5 @@ function gdy_js(string $path, ?string $nonce = null, array $attrs = []): void {
         $extra .= ' ' . htmlspecialchars((string)$k, ENT_QUOTES, 'UTF-8')
                . '="' . htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8') . '"';
     }
-    echo "<script{$nonceAttr} src="{$src}"{$extra}></script>" . "\n";
+    echo '<script' . $nonceAttr . ' src="' . $src . '"' . $extra . '></script>' . "\n";
 }
