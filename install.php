@@ -213,7 +213,7 @@ function seed_settings(PDO $pdo, array $site): void {
         'site_timezone' => $site['timezone'] ?: 'Asia/Riyadh',
         'site_email' => $site['email'] ?: '',
         'site_description' => $site['description'] ?: '',
-        'site_version' => '1.5.0',
+        'site_version' => '1.5.1',
         'site_installed_at' => date('Y-m-d H:i:s'),
     ];
 
@@ -407,7 +407,7 @@ label{display:block;margin:12px 0 8px;color:#cbd5e1}
 <body>
 <div class="card">
   <div class="header">
-    <h1>🚀 مُثبّت Godyar CMS <span class="badge">v1.5</span></h1>
+    <h1>🚀 مُثبّت Godyar CMS <span class="badge">v1.5.1</span></h1>
     <small>بعد التثبيت احذف install.php و install/</small>
   </div>
   <div class="body">

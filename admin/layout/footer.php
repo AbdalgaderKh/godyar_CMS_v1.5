@@ -43,5 +43,5 @@ if (function_exists('site_setting')) {
     </div>
   </div>
 
-  <div class = "gdy-admin-badge">Godyar CMS <?php echo defined('GDY_VERSION') ? h((string)GDY_VERSION) : 'v1.11'; ?></div>
+  <div class = "gdy-admin-badge">Godyar CMS <?php echo defined('GDY_VERSION') ? h((string)GDY_VERSION) : 'v1.5.1'; ?></div>
 </footer>

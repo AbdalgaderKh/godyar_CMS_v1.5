@@ -83,14 +83,64 @@ $siteAddr  = (string)($siteSettings['site_address'] ?? '');
 $iconsSprite = asset_url('assets/icons/godyar-icons.svg');
 $gdyIsUser = (!empty($_SESSION['user']) || !empty($_SESSION['user_id']) || !empty($_SESSION['user_email']));
 
+$getSetting = function(string $key): string {
+  if (function_exists('settings_get')) {
+    return trim((string)settings_get($key, ''));
+  }
+  return '';
+};
+
 $social = [
-  'facebook'  => trim((string)($siteSettings['facebook_url'] ?? $siteSettings['social_facebook'] ?? '')),
-  'twitter'   => trim((string)($siteSettings['twitter_url'] ?? $siteSettings['x_url'] ?? $siteSettings['social_twitter'] ?? '')),
-  'instagram' => trim((string)($siteSettings['instagram_url'] ?? $siteSettings['social_instagram'] ?? '')),
-  'youtube'   => trim((string)($siteSettings['youtube_url'] ?? $siteSettings['social_youtube'] ?? '')),
-  'telegram'  => trim((string)($siteSettings['telegram_url'] ?? $siteSettings['social_telegram'] ?? '')),
-  'whatsapp'  => trim((string)($siteSettings['whatsapp_url'] ?? $siteSettings['social_whatsapp'] ?? '')),
+  'facebook'  => trim((string)($siteSettings['facebook_url'] ?? $siteSettings['social_facebook'] ?? $getSetting('social_facebook'))),
+  // "twitter" kept for backward compatibility; may represent X.
+  'twitter'   => trim((string)($siteSettings['twitter_url'] ?? $siteSettings['x_url'] ?? $siteSettings['social_x'] ?? $siteSettings['social_twitter'] ?? $getSetting('social_twitter'))),
+  'instagram' => trim((string)($siteSettings['instagram_url'] ?? $siteSettings['social_instagram'] ?? $getSetting('social_instagram'))),
+  'youtube'   => trim((string)($siteSettings['youtube_url'] ?? $siteSettings['social_youtube'] ?? $getSetting('social_youtube'))),
+  'telegram'  => trim((string)($siteSettings['telegram_url'] ?? $siteSettings['social_telegram'] ?? $getSetting('social_telegram'))),
+  'whatsapp'  => trim((string)($siteSettings['whatsapp_url'] ?? $siteSettings['social_whatsapp'] ?? $getSetting('social_whatsapp'))),
+  'linkedin'  => trim((string)($siteSettings['linkedin_url'] ?? $siteSettings['social_linkedin'] ?? $getSetting('social_linkedin'))),
+  'tiktok'    => trim((string)($siteSettings['tiktok_url'] ?? $siteSettings['social_tiktok'] ?? $getSetting('social_tiktok'))),
 ];
+
+
+// Support admin setting that stores socials as JSON (key: social_links)
+// Example: [{"name":"Facebook","icon":"facebook","url":"https://..."}, ...]
+// This makes socials appear across all themes using this unified footer.
+if (count(array_filter($social, fn($v) => $v !== '')) === 0) {
+  $raw = $siteSettings['social_links'] ?? null;
+  $arr = [];
+  if (is_string($raw) && trim($raw) !== '') {
+    $tmp = json_decode($raw, true);
+    $arr = is_array($tmp) ? $tmp : [];
+  } elseif (is_array($raw)) {
+    $arr = $raw;
+  }
+
+  if (!empty($arr)) {
+    foreach ($arr as $item) {
+      if (!is_array($item)) continue;
+      $url = trim((string)($item['url'] ?? $item['link'] ?? ''));
+      if ($url === '') continue;
+
+      $key = strtolower(trim((string)($item['icon'] ?? $item['key'] ?? $item['name'] ?? '')));
+      $key = str_replace([' ', '-'], '_', $key);
+      // Normalize common names
+      if (in_array($key, ['x', 'twitter_x', 'twitter'], true)) $key = 'twitter';
+      if (in_array($key, ['fb', 'facebook'], true)) $key = 'facebook';
+      if (in_array($key, ['insta', 'instagram'], true)) $key = 'instagram';
+      if (in_array($key, ['yt', 'youtube'], true)) $key = 'youtube';
+      if (in_array($key, ['wa', 'whatsapp'], true)) $key = 'whatsapp';
+      if (in_array($key, ['tg', 'telegram'], true)) $key = 'telegram';
+      if (in_array($key, ['linkedin', 'linked_in'], true)) $key = 'linkedin';
+      if (in_array($key, ['tiktok', 'tik_tok'], true)) $key = 'tiktok';
+
+      // Keep unknown platforms but don't exceed a sane count
+      if (!isset($social[$key])) {
+        $social[$key] = $url;
+      }
+    }
+  }
+}
 
 ?>
 
@@ -161,7 +211,14 @@ $social = [
           <div class="gdy-social">
             <?php
               $iconMap = [
-                'facebook'=>'facebook','twitter'=>'twitter','instagram'=>'instagram','youtube'=>'youtube','telegram'=>'telegram','whatsapp'=>'whatsapp'
+                'facebook'=>'facebook',
+                'twitter'=>'twitter',
+                'instagram'=>'instagram',
+                'youtube'=>'youtube',
+                'telegram'=>'telegram',
+                'whatsapp'=>'whatsapp',
+                'linkedin'=>'linkedin',
+                'tiktok'=>'tiktok',
               ];
               $printed = 0;
               foreach ($social as $k => $v) {
@@ -169,7 +226,9 @@ $social = [
                 $printed++;
                 $iconId = $iconMap[$k] ?? 'more-h';
 	                $ref = h($iconsSprite) . '#' . h($iconId);
-	                echo '<a href="' . u($v) . '" target="_blank" rel="noopener noreferrer" aria-label="' . h($k) . '">'
+	              $label = $k;
+	              if ($k === 'twitter') $label = 'X';
+	              echo '<a href="' . u($v) . '" target="_blank" rel="noopener noreferrer" aria-label="' . h($label) . '">' 
 	                  . '<svg class="gdy-icon" aria-hidden="true"><use href="' . $ref . '" xlink:href="' . $ref . '"></use></svg>'
                   . '</a>';
               }

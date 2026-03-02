@@ -10,7 +10,7 @@ declare(strict_types = 1);
  */
 
 if (!defined('GODYAR_CMS_VERSION')) {
-    define('GODYAR_CMS_VERSION', 'v1.11');
+    define('GODYAR_CMS_VERSION', 'v1.5.1');
 }
 
 // Default copyright text (can be overridden by defining GODYAR_CMS_COPYRIGHT)
@@ -19,7 +19,7 @@ if (!defined('GODYAR_CMS_COPYRIGHT')) {
 }
 
 /**
- * Returns a short badge text like: "Godyar CMS v1.11"
+ * Returns a short badge text like: "Godyar CMS v1.5.1"
  */
 if (!function_exists('gdy_cms_badge')) {
     function gdy_cms_badge(): string

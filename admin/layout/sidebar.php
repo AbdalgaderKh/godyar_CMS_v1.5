@@ -784,7 +784,7 @@ foreach ($staticPluginLinks as $it) {
       </div>
       <div class = "admin-sidebar__footer-version" style = "margin-top:10px;color:rgba(255,255,255,.70);font-size:.78rem;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;">
         <span>© <?php echo (int)date('Y'); ?> <?php echo h(defined('GODYAR_CMS_COPYRIGHT') ? (string)GODYAR_CMS_COPYRIGHT : 'Godyar CMS'); ?></span>
-        <span style = "font-weight:800;"><?php echo h(function_exists('gdy_cms_badge') ? gdy_cms_badge() : 'Godyar CMS v1.11'); ?></span>
+        <span style = "font-weight:800;"><?php echo h(function_exists('gdy_cms_badge') ? gdy_cms_badge() : 'Godyar CMS v1.5.1'); ?></span>
       </div>
 
     </footer>

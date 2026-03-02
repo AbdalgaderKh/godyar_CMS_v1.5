@@ -1,1 +1,1 @@
-Dark Pro Admin Theme for Godyar CMS v1.11
+Dark Pro Admin Theme for Godyar CMS v1.5.1
