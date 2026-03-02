@@ -101,6 +101,56 @@ $social = [
   'telegram'  => trim((string)\App\Services\Settings::get('social.telegram', (string)($siteSettings['social_telegram'] ?? $siteSettings['social.telegram'] ?? ''))),
   'whatsapp'  => trim((string)\App\Services\Settings::get('social.whatsapp', (string)($siteSettings['social_whatsapp'] ?? $siteSettings['social.whatsapp'] ?? ''))),
 ];
+
+// Normalize common social inputs (handles/phones) into full URLs.
+// This prevents values like "godyar_cms" or "2499...." from rendering as broken links.
+if (!function_exists('gdy_social_normalize')) {
+  function gdy_social_normalize(string $key, string $val): string {
+    $val = trim($val);
+    if ($val === '') return '';
+    if (preg_match('~^https?://~i', $val)) return $val;
+    if (preg_match('~^(//|javascript:)~i', $val)) return '';
+    if ($val !== '' && $val[0] === '@') $val = ltrim($val, '@');
+    if (preg_match('~^(t\.me|wa\.me|instagram\.com|x\.com|twitter\.com|facebook\.com|youtube\.com)/~i', $val)) {
+      return 'https://' . $val;
+    }
+    $k = strtolower($key);
+    if ($k === 'whatsapp') {
+      $digits = preg_replace('~[^0-9]~', '', $val);
+      if ($digits !== '') return 'https://wa.me/' . $digits;
+    }
+    if ($k === 'telegram') {
+      return 'https://t.me/' . rawurlencode($val);
+    }
+    if ($k === 'twitter') {
+      return 'https://x.com/' . rawurlencode($val);
+    }
+    if ($k === 'instagram') {
+      return 'https://www.instagram.com/' . rawurlencode($val);
+    }
+    if ($k === 'facebook') {
+      if (preg_match('~^(profile\.php\?|pages/|groups/)~i', $val)) return 'https://www.facebook.com/' . $val;
+      return 'https://www.facebook.com/' . rawurlencode($val);
+    }
+    if ($k === 'youtube') {
+      if (preg_match('~^(@|channel/|c/|user/|watch\?|shorts/)~i', $val)) return 'https://www.youtube.com/' . $val;
+      return 'https://www.youtube.com/@' . rawurlencode($val);
+    }
+    if ($k === 'linkedin') {
+      return 'https://www.linkedin.com/' . ltrim($val, '/');
+    }
+    if ($k === 'tiktok') {
+      $v = $val;
+      if ($v !== '' && $v[0] !== '@') $v = '@' . $v;
+      return 'https://www.tiktok.com/' . rawurlencode($v);
+    }
+    return $val;
+  }
+}
+
+foreach ($social as $k => $v) {
+  $social[$k] = gdy_social_normalize($k, (string)$v);
+}
 // Support admin setting that stores socials as JSON (key: social_links)
 // Example: [{"name":"Facebook","icon":"facebook","url":"https://..."}, ...]
 // This makes socials appear across all themes using this unified footer.

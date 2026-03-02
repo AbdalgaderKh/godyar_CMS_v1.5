@@ -389,3 +389,23 @@ body[data-theme="light"].theme-pink{
 
 .as-feature--slider.gdy-hero-is-fading .as-hero-img,
 .as-feature--slider.gdy-hero-is-fading .as-feature-body{ opacity: .60; }
+
+/* ==========================================================
+   Listing cards (Category/Tag/Search)
+   Prevent huge thumbnails and keep consistent aspect ratio.
+   ========================================================== */
+.card{ overflow:hidden; }
+
+.card > img.card-img-top,
+img.card-img-top{
+  display:block;
+  width:100%;
+  max-width:100%;
+  height:220px;
+  object-fit:cover;
+}
+
+@media (max-width:575.98px){
+  .card > img.card-img-top,
+  img.card-img-top{ height:180px; }
+}
