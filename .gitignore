@@ -21,3 +21,5 @@ Thumbs.db
 
 # PHPUnit / composer artifacts
 composer.lock
+
+/storage/

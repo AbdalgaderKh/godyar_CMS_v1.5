@@ -35,6 +35,25 @@ article.card img,
 .news-thumb{
   overflow:hidden;
   border-radius: 14px;
+  /* Constrain listing thumbnails so portrait images don't stretch cards */
+  aspect-ratio: 16 / 9;
+  background: rgba(2,6,23,.04);
+}
+
+/* Fallback for browsers without aspect-ratio */
+@supports not (aspect-ratio: 16 / 9){
+  .gdy-card-thumb,
+  .post-thumbnail,
+  .post-thumb,
+  .news-thumb{ position: relative; }
+  .gdy-card-thumb::before,
+  .post-thumbnail::before,
+  .post-thumb::before,
+  .news-thumb::before{ content:""; display:block; padding-top:56.25%; }
+  .gdy-card-thumb img,
+  .post-thumbnail img,
+  .post-thumb img,
+  .news-thumb img{ position:absolute; inset:0; }
 }
 
 /* Article cover */

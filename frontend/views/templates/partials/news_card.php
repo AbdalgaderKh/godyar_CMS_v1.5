@@ -98,8 +98,13 @@ $extraClass = isset($cardExtraClass) ? (string)$cardExtraClass : '';
 ?>
 <a href = "<?php echo h($newsUrl); ?>" class = "gdy-card <?php echo h($extraClass); ?>">
     <?php if (!empty($img)): ?>
-        <div class = "gdy-card-thumb">
-            <img loading="lazy" decoding="async" src = "<?php echo h($img); ?>" alt = "<?php echo h($title); ?>">
+        <!--
+          Thumbnail wrapper intentionally constrains image height.
+          CSS (assets/css/media-system.css) enforces 16:9 + object-fit cover.
+          This prevents portrait images from stretching cards on category/archive pages.
+        -->
+        <div class="gdy-card-thumb" style="aspect-ratio:16/9;overflow:hidden;">
+            <img loading="lazy" decoding="async" src="<?php echo h($img); ?>" alt="<?php echo h($title); ?>" style="width:100%;height:100%;object-fit:cover;display:block;">
         </div>
     <?php endif; ?>
 

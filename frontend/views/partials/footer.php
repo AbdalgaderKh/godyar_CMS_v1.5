@@ -90,19 +90,17 @@ $getSetting = function(string $key): string {
   return '';
 };
 
+// Social links (v1.6): read from Settings service first (DB-backed), with legacy keys.
+// Supports both: dot keys (preferred) and legacy underscore keys.
 $social = [
-  'facebook'  => trim((string)($siteSettings['facebook_url'] ?? $siteSettings['social_facebook'] ?? $getSetting('social_facebook'))),
+  'facebook'  => trim((string)\App\Services\Settings::get('social.facebook', (string)($siteSettings['social_facebook'] ?? $siteSettings['social.facebook'] ?? ''))),
   // "twitter" kept for backward compatibility; may represent X.
-  'twitter'   => trim((string)($siteSettings['twitter_url'] ?? $siteSettings['x_url'] ?? $siteSettings['social_x'] ?? $siteSettings['social_twitter'] ?? $getSetting('social_twitter'))),
-  'instagram' => trim((string)($siteSettings['instagram_url'] ?? $siteSettings['social_instagram'] ?? $getSetting('social_instagram'))),
-  'youtube'   => trim((string)($siteSettings['youtube_url'] ?? $siteSettings['social_youtube'] ?? $getSetting('social_youtube'))),
-  'telegram'  => trim((string)($siteSettings['telegram_url'] ?? $siteSettings['social_telegram'] ?? $getSetting('social_telegram'))),
-  'whatsapp'  => trim((string)($siteSettings['whatsapp_url'] ?? $siteSettings['social_whatsapp'] ?? $getSetting('social_whatsapp'))),
-  'linkedin'  => trim((string)($siteSettings['linkedin_url'] ?? $siteSettings['social_linkedin'] ?? $getSetting('social_linkedin'))),
-  'tiktok'    => trim((string)($siteSettings['tiktok_url'] ?? $siteSettings['social_tiktok'] ?? $getSetting('social_tiktok'))),
+  'twitter'   => trim((string)\App\Services\Settings::get('social.twitter', (string)($siteSettings['social_twitter'] ?? $siteSettings['social_x'] ?? $siteSettings['social.twitter'] ?? ''))),
+  'instagram' => trim((string)\App\Services\Settings::get('social.instagram', (string)($siteSettings['social_instagram'] ?? $siteSettings['social.instagram'] ?? ''))),
+  'youtube'   => trim((string)\App\Services\Settings::get('social.youtube', (string)($siteSettings['social_youtube'] ?? $siteSettings['social.youtube'] ?? ''))),
+  'telegram'  => trim((string)\App\Services\Settings::get('social.telegram', (string)($siteSettings['social_telegram'] ?? $siteSettings['social.telegram'] ?? ''))),
+  'whatsapp'  => trim((string)\App\Services\Settings::get('social.whatsapp', (string)($siteSettings['social_whatsapp'] ?? $siteSettings['social.whatsapp'] ?? ''))),
 ];
-
-
 // Support admin setting that stores socials as JSON (key: social_links)
 // Example: [{"name":"Facebook","icon":"facebook","url":"https://..."}, ...]
 // This makes socials appear across all themes using this unified footer.
