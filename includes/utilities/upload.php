@@ -52,7 +52,11 @@ final class Upload
             }
             $ht = rtrim($destAbs, "/" .chr(92)) . '/.htaccess';
             if (!is_file($ht)) {
-                @file_put_contents($ht, "Options -Indexes\n<FilesMatch \\"\\.(php|phtml|php\\d|phar)\$\\">\n  Deny from all\n</FilesMatch>\n");
+                // Block executing scripts inside uploads (best-effort)
+                @file_put_contents(
+                    $ht,
+                    "Options -Indexes\n<FilesMatch \"\\.(php|phtml|php\\d|phar)$\">\n  Deny from all\n</FilesMatch>\n"
+                );
             }
         } catch (\Throwable $e) {
             // ignore

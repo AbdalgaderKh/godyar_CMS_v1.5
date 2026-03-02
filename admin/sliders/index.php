@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
 // هذا المجلد (admin/sliders) كان نسخة قديمة.
 // لتفادي "تعدد الإدخال" وتشتت البيانات، نوجه لإدارة السلايدر الموحدة:
 // admin/slider (table: slider)
 header('Location: ../slider/index.php', true, 301);
 exit;
-
-declare(strict_types = 1);
 
 require_once __DIR__ . '/../_admin_guard.php';
 require_once __DIR__ . '/../../includes/bootstrap.php';

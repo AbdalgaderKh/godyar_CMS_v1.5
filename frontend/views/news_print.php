@@ -75,11 +75,11 @@ function gdy_strip_print_highlights(string $html): string
   if ($tmp !== null) { $html = $tmp; }
 
   // Remove legacy bgcolor = "..."
-  $tmp = preg_replace('~\sbgcolor\s*=\s*("|').*?\1~i', '', $html);
+  $tmp = preg_replace("~\\sbgcolor\\s*=\\s*(\"|').*?\\1~i", '', $html);
   if ($tmp !== null) { $html = $tmp; }
 
   // Clean style = "..." (strip background colors/highlights)
-  $tmp = preg_replace_callback('~\sstyle\s*=\s*("|')(.*?)\1~is', function ($m) {
+  $tmp = preg_replace_callback("~\\sstyle\\s*=\\s*(\"|')(.*?)\\1~is", function ($m) {
     $quote = $m[1];
     $style = (string)($m[2] ?? '');
 

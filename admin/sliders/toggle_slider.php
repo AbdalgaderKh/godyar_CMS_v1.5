@@ -1,10 +1,9 @@
 <?php
+declare(strict_types=1);
 
 // Deprecated (admin/sliders) -> unified module (admin/slider)
 header('Location: ../slider/index.php', true, 301);
 exit;
-
-declare(strict_types = 1);
 
 require_once __DIR__ . '/../_admin_guard.php';
 require_once __DIR__ . '/../../includes/bootstrap.php';
