@@ -1,0 +1,20 @@
+[17-Feb-2026 15:11:02 UTC] PHP Fatal error:  Uncaught Error: Class "Godyar\Auth" not found in /home/geqzylcq/public_html/admin/news/create.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/geqzylcq/public_html/admin/news/create.php on line 14
+[17-Feb-2026 15:11:25 UTC] PHP Fatal error:  Uncaught Error: Class "Godyar\Auth" not found in /home/geqzylcq/public_html/admin/news/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/geqzylcq/public_html/admin/news/index.php on line 15
+[20-Feb-2026 18:37:07 UTC] Could not check image column in news: Call to undefined function gdy_db_stmt_column_like()
+[20-Feb-2026 18:37:07 UTC] Error fetching opinion_authors: Call to undefined function db_table_exists()
+[22-Feb-2026 19:08:01 UTC] Could not check image column in news: Call to undefined function gdy_db_stmt_column_like()
+[22-Feb-2026 19:08:01 UTC] Error fetching opinion_authors: Call to undefined function db_table_exists()
+[22-Feb-2026 19:19:29 UTC] Could not check image column in news: Call to undefined function gdy_db_stmt_column_like()
+[22-Feb-2026 19:19:29 UTC] Error fetching opinion_authors: Call to undefined function db_table_exists()
+[22-Feb-2026 19:19:31 UTC] Could not check image column in news: Call to undefined function gdy_db_stmt_column_like()
+[22-Feb-2026 19:19:31 UTC] Error fetching opinion_authors: Call to undefined function db_table_exists()
+[22-Feb-2026 19:28:56 UTC] Could not check image column in news: Call to undefined function gdy_db_stmt_column_like()
+[22-Feb-2026 19:28:56 UTC] Error fetching opinion_authors: Call to undefined function db_table_exists()
+[22-Feb-2026 20:15:30 UTC] Could not check image column in news: Call to undefined function gdy_db_stmt_column_like()
+[22-Feb-2026 20:15:30 UTC] Error fetching opinion_authors: Call to undefined function db_table_exists()

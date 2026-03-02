@@ -1,0 +1,4 @@
+[17-Feb-2026 15:11:47 UTC] PHP Fatal error:  Uncaught Error: Class "Godyar\Auth" not found in /home/geqzylcq/public_html/admin/users/index.php:124
+Stack trace:
+#0 {main}
+  thrown in /home/geqzylcq/public_html/admin/users/index.php on line 124

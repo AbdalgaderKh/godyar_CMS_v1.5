@@ -1,0 +1,80 @@
+[17-Feb-2026 15:04:48 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function gdy_file_put_contents() in /home/geqzylcq/public_html/includes/rate_limit.php:43
+Stack trace:
+#0 /home/geqzylcq/public_html/admin/login.php(44): gody_rate_limit('admin_login', 8, 600)
+#1 {main}
+  thrown in /home/geqzylcq/public_html/includes/rate_limit.php on line 43
+[17-Feb-2026 15:46:41 UTC] PHP Parse error:  syntax error, unexpected token "\" in /home/geqzylcq/public_html/admin/index.php on line 398
+[19-Feb-2026 19:43:16 UTC] PHP Warning:  Undefined variable $lang in /home/geqzylcq/public_html/admin/layout/header.php on line 136
+[19-Feb-2026 19:43:16 UTC] PHP Warning:  Undefined variable $dir in /home/geqzylcq/public_html/admin/layout/header.php on line 136
+[19-Feb-2026 19:43:16 UTC] PHP Warning:  Undefined variable $adminTheme in /home/geqzylcq/public_html/admin/layout/header.php on line 136
+[19-Feb-2026 19:43:16 UTC] PHP Warning:  Undefined variable $base in /home/geqzylcq/public_html/admin/layout/header.php on line 143
+[19-Feb-2026 19:43:16 UTC] PHP Warning:  Undefined variable $jsonFlags in /home/geqzylcq/public_html/admin/layout/header.php on line 143
+[19-Feb-2026 19:43:16 UTC] PHP Fatal error:  Uncaught TypeError: json_encode(): Argument #2 ($flags) must be of type int, null given in /home/geqzylcq/public_html/admin/layout/header.php:143
+Stack trace:
+#0 /home/geqzylcq/public_html/admin/layout/header.php(143): json_encode(NULL, NULL)
+#1 /home/geqzylcq/public_html/admin/index.php(416): require('/home/geqzylcq/...')
+#2 {main}
+  thrown in /home/geqzylcq/public_html/admin/layout/header.php on line 143
+[19-Feb-2026 19:43:21 UTC] PHP Warning:  Undefined variable $lang in /home/geqzylcq/public_html/admin/layout/header.php on line 136
+[19-Feb-2026 19:43:21 UTC] PHP Warning:  Undefined variable $dir in /home/geqzylcq/public_html/admin/layout/header.php on line 136
+[19-Feb-2026 19:43:21 UTC] PHP Warning:  Undefined variable $adminTheme in /home/geqzylcq/public_html/admin/layout/header.php on line 136
+[19-Feb-2026 19:43:21 UTC] PHP Warning:  Undefined variable $base in /home/geqzylcq/public_html/admin/layout/header.php on line 143
+[19-Feb-2026 19:43:21 UTC] PHP Warning:  Undefined variable $jsonFlags in /home/geqzylcq/public_html/admin/layout/header.php on line 143
+[19-Feb-2026 19:43:21 UTC] PHP Fatal error:  Uncaught TypeError: json_encode(): Argument #2 ($flags) must be of type int, null given in /home/geqzylcq/public_html/admin/layout/header.php:143
+Stack trace:
+#0 /home/geqzylcq/public_html/admin/layout/header.php(143): json_encode(NULL, NULL)
+#1 /home/geqzylcq/public_html/admin/index.php(416): require('/home/geqzylcq/...')
+#2 {main}
+  thrown in /home/geqzylcq/public_html/admin/layout/header.php on line 143
+[19-Feb-2026 20:27:29 UTC] PHP Warning:  Undefined variable $lang in /home/geqzylcq/public_html/admin/layout/header.php on line 148
+[19-Feb-2026 20:27:29 UTC] PHP Warning:  Undefined variable $dir in /home/geqzylcq/public_html/admin/layout/header.php on line 148
+[19-Feb-2026 20:27:29 UTC] PHP Warning:  Undefined variable $adminTheme in /home/geqzylcq/public_html/admin/layout/header.php on line 148
+[19-Feb-2026 20:27:29 UTC] PHP Warning:  Undefined variable $base in /home/geqzylcq/public_html/admin/layout/header.php on line 155
+[19-Feb-2026 20:27:29 UTC] PHP Warning:  Undefined variable $jsonFlags in /home/geqzylcq/public_html/admin/layout/header.php on line 155
+[19-Feb-2026 20:27:29 UTC] PHP Fatal error:  Uncaught TypeError: json_encode(): Argument #2 ($flags) must be of type int, null given in /home/geqzylcq/public_html/admin/layout/header.php:155
+Stack trace:
+#0 /home/geqzylcq/public_html/admin/layout/header.php(155): json_encode(NULL, NULL)
+#1 /home/geqzylcq/public_html/admin/index.php(416): require('/home/geqzylcq/...')
+#2 {main}
+  thrown in /home/geqzylcq/public_html/admin/layout/header.php on line 155
+[19-Feb-2026 20:27:32 UTC] PHP Warning:  Undefined variable $lang in /home/geqzylcq/public_html/admin/layout/header.php on line 148
+[19-Feb-2026 20:27:32 UTC] PHP Warning:  Undefined variable $dir in /home/geqzylcq/public_html/admin/layout/header.php on line 148
+[19-Feb-2026 20:27:32 UTC] PHP Warning:  Undefined variable $adminTheme in /home/geqzylcq/public_html/admin/layout/header.php on line 148
+[19-Feb-2026 20:27:32 UTC] PHP Warning:  Undefined variable $base in /home/geqzylcq/public_html/admin/layout/header.php on line 155
+[19-Feb-2026 20:27:32 UTC] PHP Warning:  Undefined variable $jsonFlags in /home/geqzylcq/public_html/admin/layout/header.php on line 155
+[19-Feb-2026 20:27:32 UTC] PHP Fatal error:  Uncaught TypeError: json_encode(): Argument #2 ($flags) must be of type int, null given in /home/geqzylcq/public_html/admin/layout/header.php:155
+Stack trace:
+#0 /home/geqzylcq/public_html/admin/layout/header.php(155): json_encode(NULL, NULL)
+#1 /home/geqzylcq/public_html/admin/index.php(416): require('/home/geqzylcq/...')
+#2 {main}
+  thrown in /home/geqzylcq/public_html/admin/layout/header.php on line 155
+[19-Feb-2026 20:27:48 UTC] PHP Warning:  Undefined variable $lang in /home/geqzylcq/public_html/admin/layout/header.php on line 148
+[19-Feb-2026 20:27:48 UTC] PHP Warning:  Undefined variable $dir in /home/geqzylcq/public_html/admin/layout/header.php on line 148
+[19-Feb-2026 20:27:48 UTC] PHP Warning:  Undefined variable $adminTheme in /home/geqzylcq/public_html/admin/layout/header.php on line 148
+[19-Feb-2026 20:27:48 UTC] PHP Warning:  Undefined variable $base in /home/geqzylcq/public_html/admin/layout/header.php on line 155
+[19-Feb-2026 20:27:48 UTC] PHP Warning:  Undefined variable $jsonFlags in /home/geqzylcq/public_html/admin/layout/header.php on line 155
+[19-Feb-2026 20:27:48 UTC] PHP Fatal error:  Uncaught TypeError: json_encode(): Argument #2 ($flags) must be of type int, null given in /home/geqzylcq/public_html/admin/layout/header.php:155
+Stack trace:
+#0 /home/geqzylcq/public_html/admin/layout/header.php(155): json_encode(NULL, NULL)
+#1 /home/geqzylcq/public_html/admin/index.php(416): require('/home/geqzylcq/...')
+#2 {main}
+  thrown in /home/geqzylcq/public_html/admin/layout/header.php on line 155
+[20-Feb-2026 16:49:39 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function gdy_pdo_safe() in /home/geqzylcq/public_html/admin/login.php:37
+Stack trace:
+#0 {main}
+  thrown in /home/geqzylcq/public_html/admin/login.php on line 37
+[20-Feb-2026 16:56:10 UTC] PHP Warning:  Undefined variable $cspNonce in /home/geqzylcq/public_html/admin/login.php on line 284
+[20-Feb-2026 16:56:10 UTC] PHP Fatal error:  Uncaught TypeError: __(): Argument #2 ($vars) must be of type array, string given, called in /home/geqzylcq/public_html/admin/login.php on line 503 and defined in /home/geqzylcq/public_html/includes/bootstrap.php:73
+Stack trace:
+#0 /home/geqzylcq/public_html/admin/login.php(503): __('t_efdc17402d', '\xD9\x86\xD8\xB3\xD9\x8A\xD8\xAA \xD9\x83\xD9\x84\xD9\x85...')
+#1 {main}
+  thrown in /home/geqzylcq/public_html/includes/bootstrap.php on line 73
+[20-Feb-2026 16:59:22 UTC] PHP Warning:  Undefined variable $cspNonce in /home/geqzylcq/public_html/admin/login.php on line 284
+[20-Feb-2026 16:59:22 UTC] PHP Warning:  Undefined variable $cspNonce in /home/geqzylcq/public_html/admin/login.php on line 548
+[20-Feb-2026 17:05:15 UTC] PHP Warning:  Undefined variable $cspNonce in /home/geqzylcq/public_html/admin/login.php on line 284
+[20-Feb-2026 17:05:15 UTC] PHP Warning:  Undefined variable $cspNonce in /home/geqzylcq/public_html/admin/login.php on line 548
+[20-Feb-2026 23:44:59 UTC] PHP Parse error:  syntax error, unexpected single-quoted string ";", expecting ")" in /home/geqzylcq/public_html/admin/i18n.php on line 116
+[22-Feb-2026 18:18:30 UTC] [Godyar DB] pdo_safe: syntax error, unexpected single-quoted string ""); // strip surrounding quote...", expecting ")"
+[22-Feb-2026 18:18:30 UTC] PHP Warning:  Undefined variable $cspNonce in /home/geqzylcq/public_html/admin/login.php on line 284
+[22-Feb-2026 18:18:30 UTC] PHP Warning:  Undefined variable $cspNonce in /home/geqzylcq/public_html/admin/login.php on line 548
+[22-Feb-2026 18:40:04 UTC] PHP Parse error:  syntax error, unexpected single-quoted string ") return null;", expecting ")" in /home/geqzylcq/public_html/includes/i18n.php on line 107
