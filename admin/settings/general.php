@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($__gdy_embed === false || (string)
             if (isset($allowed[$mime]) === false) {
                 throw new RuntimeException('صيغة الشعار غير مدعومة.');
             }
-	            $root = defined('ROOT_PATH') ? rtrim((string)ROOT_PATH, '/\\') : rtrim(dirname(__DIR__, 2), '/\\');
+	            $root = defined('ROOT_PATH') ? rtrim((string)ROOT_PATH, '/\\') : rtrim(dirname(__DIR__, 3), '/\\');
             $dir = $root . '/assets/uploads/site/';
             if (is_dir($dir) === false) { gdy_mkdir($dir, 0755, true); }
             $ext = $allowed[$mime];
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($__gdy_embed === false || (string)
             if ((isset($allowed[$mime]) === false)) {
                 throw new RuntimeException('صيغة الأيقونة غير مدعومة.');
             }
-	            $root = defined('ROOT_PATH') ? rtrim((string)ROOT_PATH, '/\\') : rtrim(dirname(__DIR__, 2), '/\\');
+	            $root = defined('ROOT_PATH') ? rtrim((string)ROOT_PATH, '/\\') : rtrim(dirname(__DIR__, 3), '/\\');
             $dir = $root . '/assets/uploads/site/';
             if (!is_dir($dir)) { gdy_mkdir($dir, 0755, true); }
             $ext = $allowed[$mime];

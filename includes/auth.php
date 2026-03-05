@@ -1,9 +1,14 @@
 <?php
 /**
- * Back-compat include for legacy paths:
- * admin/* scripts sometimes require "includes/auth.php" (lowercase).
+ * Legacy Auth entrypoint.
+ *
+ * Some parts of the project include includes/Auth.php expecting a global Auth.
+ * The canonical implementation is now namespaced: Godyar\\Auth.
  */
 
-declare(strict_types=1);
+require_once __DIR__ . '/bootstrap.php';
 
-require_once __DIR__ . '/Auth.php';
+// Provide a global Auth alias for legacy code.
+if (!class_exists('Auth', false) && class_exists('Godyar\\Auth')) {
+    class Auth extends \Godyar\Auth {}
+}

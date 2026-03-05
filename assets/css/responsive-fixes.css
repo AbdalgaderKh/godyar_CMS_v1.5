@@ -106,11 +106,7 @@ body {
 }
 
 /* Prevent the header search from becoming oversized on some theme/layout combos */
-.site-header .header-search{
-  width: 100%;
-  max-width: 520px;
-}
-.site-header .brand-title{ font-weight: 900; }
+.site-header .site-header .brand-title{ font-weight: 900; }
 
 /* -------------------------------------------------------------------------- */
 /* THEME TINT INTENSITY: header + footer should match selected theme color     */
