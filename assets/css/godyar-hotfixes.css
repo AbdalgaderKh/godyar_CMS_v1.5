@@ -597,6 +597,68 @@ img.card-img-top{
   backdrop-filter: blur(8px) !important;
 }
 
+/* Categories dropdown inside quick nav (dynamic from DB) */
+.site-header .quick-nav__dd{
+  position: relative !important;
+  display:inline-flex !important;
+}
+
+.site-header .quick-nav__dd-btn{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap: 6px !important;
+  padding: 6px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,0.30) !important;
+  border: 1px solid rgba(255,255,255,0.20) !important;
+  backdrop-filter: blur(8px) !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+.site-header .quick-nav__dd-btn .chev{
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.site-header .quick-nav__menu{
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  inset-inline-end: 0 !important;
+  min-width: 220px !important;
+  max-height: 340px !important;
+  overflow: auto !important;
+  padding: 8px !important;
+  border-radius: 14px !important;
+  background: rgba(20, 28, 33, 0.86) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.18) !important;
+  display: none !important;
+  z-index: 9999 !important;
+}
+
+.site-header .quick-nav__menu a{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  padding: 8px 10px !important;
+  border-radius: 10px !important;
+  color: rgba(255,255,255,0.92) !important;
+  text-decoration:none !important;
+  font-size: 14px !important;
+}
+
+.site-header .quick-nav__menu a:hover{
+  background: rgba(255,255,255,0.10) !important;
+}
+
+/* Open state (hover + keyboard). If your dropdown JS sets aria-expanded on the button, this still works via focus-within. */
+.site-header .quick-nav__dd:focus-within .quick-nav__menu,
+.site-header .quick-nav__dd:hover .quick-nav__menu{
+  display:block !important;
+}
+
 /* Remove any leftover categories UI (if any theme reintroduces it) */
 .site-header .cats-toggle,
 .site-header .cats-nav,

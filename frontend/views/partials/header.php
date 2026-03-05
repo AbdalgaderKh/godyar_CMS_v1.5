@@ -556,11 +556,53 @@ if (!isset($buildLangUrl) || !is_callable($buildLangUrl)) {
   <div class="header-secondary" role="navigation" aria-label="التنقل السريع">
     <div class="container">
       <div class="header-secondary-inner">
+        <?php
+          // -------------------------------------------------
+          // Categories (dynamic): show admin-added categories
+          // Safe: header is included from routes that usually have $pdo in scope.
+          // If not available, we silently fall back to an empty list.
+          // -------------------------------------------------
+          $__hdrCats = [];
+          try {
+            if (isset($pdo) && ($pdo instanceof PDO)) {
+              // Try the most common schemas first
+              try {
+                $__st = $pdo->query("SELECT id, name, slug FROM categories WHERE (is_active = 1 OR is_active IS NULL) AND (status = 'active' OR status IS NULL OR status = '') ORDER BY sort_order ASC, id ASC LIMIT 12");
+                $__hdrCats = $__st ? (array)$__st->fetchAll(PDO::FETCH_ASSOC) : [];
+              } catch (\Throwable $__e1) {
+                $__st = $pdo->query("SELECT id, name, slug FROM categories ORDER BY sort_order ASC, id ASC LIMIT 12");
+                $__hdrCats = $__st ? (array)$__st->fetchAll(PDO::FETCH_ASSOC) : [];
+              }
+            }
+          } catch (\Throwable $__e) {
+            $__hdrCats = [];
+          }
+        ?>
+
         <nav class="quick-nav" aria-label="روابط سريعة">
           <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($rootUrl ?: '/')) . '/') ?>"><?= h($t_home ?? 'الرئيسية') ?></a>
           <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/news') ?>"><?= h($t_news ?? 'الأخبار') ?></a>
           <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/archive') ?>"><?= h($t_archive ?? 'الأرشيف') ?></a>
           <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/page/contact') ?>"><?= h($t_contact ?? 'تواصل') ?></a>
+
+          <?php if (!empty($__hdrCats)): ?>
+            <div class="quick-nav__dd" data-hdr-dd>
+              <button type="button" class="quick-nav__dd-btn" aria-haspopup="menu" aria-expanded="false">
+                <span><?= h($t_categories ?? 'الأقسام') ?></span>
+                <svg class="gdy-icon chev" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#chevron-down"></use></svg>
+              </button>
+              <div class="quick-nav__menu" role="menu" aria-label="<?= h($t_categories ?? 'الأقسام') ?>">
+                <?php foreach ($__hdrCats as $__c):
+                  $__slug = (string)($__c['slug'] ?? '');
+                  $__name = (string)($__c['name'] ?? '');
+                  if ($__slug === '' || $__name === '') continue;
+                  $__href = rtrim(($__navRoot ?: ($baseUrl ?: '')), '/') . '/category/' . rawurlencode($__slug);
+                ?>
+                  <a role="menuitem" href="<?= h($__href) ?>" class="quick-nav__menu-item"><?= h($__name) ?></a>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          <?php endif; ?>
         </nav>
       </div>
     </div>
