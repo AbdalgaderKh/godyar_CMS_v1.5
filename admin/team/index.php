@@ -79,6 +79,21 @@ try {
     }
 }
 
+// ضمان وجود العمود "email" في التثبيتات القديمة
+$__gdy_hasEmailCol = true;
+try {
+    $pdo->query("SELECT email FROM team_members LIMIT 1");
+} catch (\Throwable $e) {
+    $__gdy_hasEmailCol = false;
+    try {
+        // بعض التثبيتات القديمة قد لا تحتوي عمود البريد
+        $pdo->exec("ALTER TABLE team_members ADD COLUMN email VARCHAR(190) DEFAULT NULL AFTER role");
+        $__gdy_hasEmailCol = true;
+    } catch (\Throwable $e2) {
+        error_log('[Godyar Team] email column migration skipped: ' . $e2->getMessage());
+    }
+}
+
 // حذف عضو (POST + CSRF)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     if (function_exists('verify_csrf')) { verify_csrf(); }
@@ -106,8 +121,9 @@ $search = trim((string)($_GET['q'] ?? ''));
 $rows = [];
 try {
 	    $selectRole = $__gdy_hasRoleCol ? 'role' : 'NULL AS role';
+		    $selectEmail = $__gdy_hasEmailCol ? 'email' : 'NULL AS email';
 	    $sql = "
-	        SELECT id, name, {$selectRole}, email, photo_url, status, sort_order
+		        SELECT id, name, {$selectRole}, {$selectEmail}, photo_url, status, sort_order
 	        FROM team_members
 	    ";
     $conds = [];
@@ -118,10 +134,16 @@ try {
         $params['status'] = $filterStatus;
     }
 
-	    if ($search !== '') {
-	        $conds[] = $__gdy_hasRoleCol
-	            ? "(name LIKE :q OR role LIKE :q OR email LIKE :q)"
-	            : "(name LIKE :q OR email LIKE :q)";
+		    if ($search !== '') {
+		        if ($__gdy_hasRoleCol && $__gdy_hasEmailCol) {
+		            $conds[] = "(name LIKE :q OR role LIKE :q OR email LIKE :q)";
+		        } elseif ($__gdy_hasRoleCol && !$__gdy_hasEmailCol) {
+		            $conds[] = "(name LIKE :q OR role LIKE :q)";
+		        } elseif (!$__gdy_hasRoleCol && $__gdy_hasEmailCol) {
+		            $conds[] = "(name LIKE :q OR email LIKE :q)";
+		        } else {
+		            $conds[] = "(name LIKE :q)";
+		        }
 	        $params['q'] = '%' . $search . '%';
 	    }
 

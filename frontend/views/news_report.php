@@ -583,6 +583,94 @@ if ($isGuest && !$membersOnly && $postId > 0) {
 
 // === End moved block ===
 
+
+// ------------------------------------------------------------
+// v3.0 SEO: NewsArticle + Breadcrumb JSON-LD + Tags fetch
+// ------------------------------------------------------------
+$tags = [];
+if (isset($pdo) && ($pdo instanceof PDO) && $postId > 0) {
+    try {
+        $st = $pdo->prepare("
+            SELECT t.name, t.slug
+            FROM news_tags nt
+            JOIN tags t ON t.id = nt.tag_id
+            WHERE nt.news_id = :nid AND (t.is_active = 1 OR t.is_active IS NULL)
+            ORDER BY t.name ASC
+            LIMIT 20
+        ");
+        $st->execute([':nid' => $postId]);
+        $tags = (array)$st->fetchAll(PDO::FETCH_ASSOC);
+    } catch (\Throwable $e) {
+        $tags = [];
+    }
+}
+
+// Build JSON-LD for article page (rendered by header.php if $jsonLd is set)
+try {
+    $img = is_string($meta_image ?? '') ? (string)$meta_image : '';
+    $author = $authorName !== '' ? $authorName : ($siteName ?? 'Godyar News');
+    $pub = $date !== '' ? date('c', strtotime($date)) : null;
+    $mod = $updatedAt !== '' ? date('c', strtotime($updatedAt)) : ($pub ?: null);
+
+    $crumbItems = [
+        ['@type'=>'ListItem','position'=>1,'name'=>($t_home ?? 'الرئيسية'),'item'=>rtrim($baseUrl,'/').'/'],
+        ['@type'=>'ListItem','position'=>2,'name'=>($categoryName ?: ($t_news ?? 'الأخبار')),'item'=>($categorySlug ? rtrim($baseUrl,'/').'/category/'.rawurlencode($categorySlug) : rtrim($baseUrl,'/').'/news')],
+        ['@type'=>'ListItem','position'=>3,'name'=>$title,'item'=>$canonical],
+    ];
+
+    $jsonLd = [
+        [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $crumbItems,
+        ],
+        [
+            '@context' => 'https://schema.org',
+            '@type' => 'NewsArticle',
+            'mainEntityOfPage' => ['@type'=>'WebPage','@id'=>$canonical],
+            'headline' => $title,
+            'description' => $seoDesc,
+            'datePublished' => $pub,
+            'dateModified' => $mod,
+            'author' => ['@type'=>'Person','name'=>$author],
+            'publisher' => [
+                '@type'=>'Organization',
+                'name'=>$siteName ?? 'Godyar News',
+                'logo'=> $logoUrl ? ['@type'=>'ImageObject','url'=>$logoUrl] : null
+            ],
+            'image' => $img !== '' ? [$img] : null,
+        ],
+    ];
+
+    // Remove nulls recursively (clean JSON-LD)
+    $jsonLd = array_map(function($item){
+        if (!is_array($item)) return $item;
+        $it = [];
+        foreach ($item as $k=>$v){
+            if (is_array($v)) {
+                // filter nested nulls
+                $v2 = $v;
+                if (array_values($v2) === $v2) {
+                    $v2 = array_values(array_filter($v2, fn($x)=>$x!==null && $x!=='' ));
+                } else {
+                    foreach ($v2 as $kk=>$vv){
+                        if ($vv === null || $vv === '') unset($v2[$kk]);
+                    }
+                }
+                if (empty($v2)) continue;
+                $it[$k]=$v2;
+            } else {
+                if ($v === null || $v === '') continue;
+                $it[$k]=$v;
+            }
+        }
+        return $it;
+    }, $jsonLd);
+
+} catch (\Throwable $e) {
+    // ignore JSON-LD failures
+}
+
 $header = __DIR__ . '/partials/header.php';
 $footer = __DIR__ . '/partials/footer.php';
 if (!defined('GDY_TPL_WRAPPED') && is_file($header)) {
@@ -844,6 +932,20 @@ if (!$isPaywalled) {
           <span class="gdy-pill"><svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="#more-h"></use></svg> للأعضاء</span>
         <?php endif; ?>
       </div>
+
+      <?php if (!empty($tags)): ?>
+        <div class="gdy-tags" aria-label="الوسوم">
+          <?php foreach ($tags as $__t):
+            $__ts = (string)($__t['slug'] ?? '');
+            $__tn = (string)($__t['name'] ?? '');
+            if ($__ts === '' || $__tn === '') continue;
+            $__th = rtrim($baseUrl,'/') . '/tag/' . rawurlencode($__ts);
+          ?>
+            <a class="gdy-tag" href="<?php echo h($__th) ?>">#<?php echo h($__tn) ?></a>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+
 
       <div class="gdy-actions" role="toolbar" aria-label="أدوات التقرير">
         <button class="gdy-act" type="button" id="gdyCopyLink">

@@ -9,6 +9,15 @@ if (!function_exists('h')) {
   function h($v): string { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 }
 
+if (!function_exists('gdy_clean_text')) {
+  function gdy_clean_text($s): string {
+    $s = (string)$s;
+    // Remove accidental PHP tag fragments that may appear from template merge/caching issues
+    return str_replace(['?>','<?'], '', $s);
+  }
+}
+
+
 // -------------------------
 // Safe defaults / inputs
 // -------------------------
@@ -438,6 +447,17 @@ if (!isset($buildLangUrl) || !is_callable($buildLangUrl)) {
     }
   ?>
 
+  <?php
+    // Extra JSON-LD (e.g., NewsArticle/BreadcrumbList) supplied by views/controllers via $jsonLd
+    if (isset($jsonLd) && is_array($jsonLd) && !empty($jsonLd)) {
+      $extraJson = json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+      if ($extraJson) {
+        echo '<script' . $nonceAttr . ' type="application/ld+json">' . $extraJson . '</script>';
+      }
+    }
+  ?>
+
+
   <link rel="stylesheet" href="<?= h($asset('assets/css/app-core.bundle.css')) ?>">
   <?php if ($pageDir === 'rtl'): ?>
     <link rel="stylesheet" href="<?= h($asset('assets/css/app-rtl.bundle.css')) ?>">
@@ -457,6 +477,9 @@ if (!isset($buildLangUrl) || !is_callable($buildLangUrl)) {
     $envV = is_file($envDisk) ? (string)filemtime($envDisk) : $assetFallbackVer;
   ?>
   <script<?= $nonceAttr ?> src="<?= h(($baseUrl ?: '') . $envPath . '?v=' . rawurlencode($envV)) ?>" defer></script>
+
+  <script defer src="<?= h($asset('assets/js/gdy-overlay-search.js')) ?>"></script>
+  <script defer src="<?= h($asset('assets/js/godyar-search-suggest.js')) ?>"></script>
 </head>
 
 <body class="<?= h($themeBodyClass) ?><?= ($pageDir === 'rtl') ? ' rtl' : '' ?>"
@@ -483,22 +506,12 @@ if (!isset($buildLangUrl) || !is_callable($buildLangUrl)) {
           <?php endif; ?>
         </div>
       </a>
-
-
-      <form class="header-search header-search--inline" action="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/search') ?>" method="get" role="search" aria-label="<?= h($searchLabel ?? 'بحث') ?>">
-        <label class="visually-hidden" for="hdrSearchQInline"><?= h($searchLabel ?? 'بحث') ?></label>
-        <span class="header-search-icon" aria-hidden="true">
-          <svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#search"></use></svg>
-        </span>
-        <input id="hdrSearchQInline" type="search" placeholder="<?= h($searchPlaceholder ?? 'ابحث عن خبر أو موضوع...') ?>" name="q" autocomplete="off" inputmode="search">
-      </form>
-
-      <div class="hdr-utils">
-        <button type="button" class="hdr-dd-btn hdr-search-btn" id="gdyMobileSearchBtn" title="بحث" aria-label="بحث" data-mobile-search-btn>
+<div class="hdr-utils">
+        <button type="button" class="hdr-dd-btn hdr-search-btn" title="بحث" aria-label="بحث" data-search-open>
           <svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#search"></use></svg>
         </button>
 
-        <div class="hdr-dropdown hdr-lang" id="gdyLangDd">
+<div class="hdr-dropdown hdr-lang" id="gdyLangDd">
           <button type="button" class="hdr-dd-btn" aria-haspopup="menu" aria-expanded="false" title="Language" data-hdr-dd>
             <svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#globe"></use></svg>
             <span><?= h(strtoupper($pageLang)) ?></span>
@@ -567,7 +580,22 @@ if (!isset($buildLangUrl) || !is_callable($buildLangUrl)) {
             if (isset($pdo) && ($pdo instanceof PDO)) {
               // Try the most common schemas first
               try {
-                $__st = $pdo->query("SELECT id, name, slug FROM categories WHERE (is_active = 1 OR is_active IS NULL) AND (status = 'active' OR status IS NULL OR status = '') ORDER BY sort_order ASC, id ASC LIMIT 12");
+                $__st = $pdo->query("SELECT c.id, c.name, c.slug,
+  (
+    SELECT COUNT(1) FROM news n
+    WHERE n.category_id = c.id
+      AND (n.deleted_at IS NULL)
+      AND (
+        (n.status = 'published')
+        OR (n.is_published = 1)
+        OR (n.status IS NULL AND n.is_published IS NULL)
+      )
+  ) AS cnt
+FROM categories c
+WHERE (c.is_active = 1 OR c.is_active IS NULL)
+  AND (c.status = 'active' OR c.status IS NULL OR c.status = '')
+ORDER BY c.sort_order ASC, c.id ASC
+LIMIT 12");
                 $__hdrCats = $__st ? (array)$__st->fetchAll(PDO::FETCH_ASSOC) : [];
               } catch (\Throwable $__e1) {
                 $__st = $pdo->query("SELECT id, name, slug FROM categories ORDER BY sort_order ASC, id ASC LIMIT 12");
@@ -580,31 +608,137 @@ if (!isset($buildLangUrl) || !is_callable($buildLangUrl)) {
         ?>
 
         <nav class="quick-nav" aria-label="روابط سريعة">
-          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($rootUrl ?: '/')) . '/') ?>"><?= h($t_home ?? 'الرئيسية') ?></a>
-          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/news') ?>"><?= h($t_news ?? 'الأخبار') ?></a>
+          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($rootUrl ?: '/')) . '/') ?>"><?= h(gdy_clean_text($t_home ?? 'الرئيسية')) ?></a>
+          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/news') ?>"><?= h(gdy_clean_text($t_news ?? 'الأخبار')) ?></a>
 
 <?php
-  $__primaryCat = null;
+  // ------------------------------
+  // Categories as top pills (max 4)
+  // + "More" dropdown for the rest
+  // ------------------------------
+  $__catLinks = [];
   if (!empty($__hdrCats) && is_array($__hdrCats)) {
-    $__primaryCat = $__hdrCats[0] ?? null;
-  }
-  if (is_array($__primaryCat)) {
-    $__pcSlug = (string)($__primaryCat['slug'] ?? '');
-    $__pcName = (string)($__primaryCat['name'] ?? '');
-    if ($__pcSlug !== '' && $__pcName !== '') {
-      $__pcHref = rtrim(($__navRoot ?: ($baseUrl ?: '')), '/') . '/category/' . rawurlencode($__pcSlug);
-?>
-<a class="quick-nav__link quick-nav__link--cat" href="<?= h($__pcHref) ?>"><?= h($__pcName) ?></a>
-<?php
+    foreach ($__hdrCats as $__c) {
+      if (!is_array($__c)) continue;
+      $__slug = (string)($__c['slug'] ?? '');
+      $__name = (string)($__c['name'] ?? '');
+      $__cnt  = (int)($__c['cnt'] ?? 0);
+      if ($__slug === '' || $__name === '') continue;
+      $__href = rtrim(($__navRoot ?: ($baseUrl ?: '')), '/') . '/category/' . rawurlencode($__slug);
+      $__catLinks[] = ['name' => $__name, 'href' => $__href, 'cnt' => $__cnt];
     }
   }
-?>
-          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/archive') ?>"><?= h($t_archive ?? 'الأرشيف') ?></a>
-          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/page/contact') ?>"><?= h($t_contact ?? 'تواصل') ?></a>
+
+  // Show up to 4 category pills in header
+  $__catPills = array_slice($__catLinks, 0, 4);
+  $__catMore  = array_slice($__catLinks, 4);
+
+  ?>
+
+  <?php foreach ($__catPills as $__i => $__c):
+    $cls = 'quick-nav__link quick-nav__link--cat';
+    if ($__i === 0) { $cls .= ' quick-nav__link--cat-primary'; }
+  ?>
+    <a class="<?= h($cls) ?>" href="<?= h($__c['href']) ?>"><span class="nav-text"><?= h(gdy_clean_text($__c['name'])) ?></span><?php if (!empty($__c['cnt'])): ?><span class="nav-count" aria-hidden="true"><?= (int)$__c['cnt'] ?></span><?php endif; ?></a>
+  <?php endforeach; ?>
+
+<?php if (!empty($__catMore)): ?>
+  <div class="quick-nav__more" data-more-menu>
+    <button type="button" class="quick-nav__more-btn" aria-haspopup="true" aria-expanded="false" data-more-btn>
+      <?= h(gdy_clean_text($t_more ?? 'المزيد')) ?>
+      <svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#chevron-down"></use></svg>
+    </button>
+    
+<div class="quick-nav__more-menu quick-nav__mega" role="menu" data-more-menu-panel>
+  <?php
+    $__allCatsForMega = $__catLinks;
+    $__featured = array_slice($__allCatsForMega, 0, 4);
+    $__rest = array_slice($__allCatsForMega, 4);
+    $__half = (int)ceil(count($__rest)/2);
+    $__left = array_slice($__rest, 0, $__half);
+    $__right = array_slice($__rest, $__half);
+  ?>
+  <div class="quick-nav__mega-head">
+    <div class="quick-nav__mega-title"><?= h(gdy_clean_text($t_featured ?? 'أبرز الأقسام')) ?></div>
+    <div class="quick-nav__mega-featured">
+      <?php foreach ($__featured as $__c): ?>
+        <a role="menuitem" class="quick-nav__mega-chip" href="<?= h($__c['href']) ?>"><?= h(gdy_clean_text($__c['name'])) ?></a>
+      <?php endforeach; ?>
+    </div>
+  </div>
+  <div class="quick-nav__mega-cols">
+    <div class="quick-nav__mega-col">
+      <?php foreach ($__left as $__c): ?>
+        <a role="menuitem" class="quick-nav__more-item" href="<?= h($__c['href']) ?>"><span class="nav-text"><?= h(gdy_clean_text($__c['name'])) ?></span><?php if (!empty($__c['cnt'])): ?><span class="nav-count" aria-hidden="true"><?= (int)$__c['cnt'] ?></span><?php endif; ?></a>
+      <?php endforeach; ?>
+    </div>
+    <div class="quick-nav__mega-col">
+      <?php foreach ($__right as $__c): ?>
+        <a role="menuitem" class="quick-nav__more-item" href="<?= h($__c['href']) ?>"><span class="nav-text"><?= h(gdy_clean_text($__c['name'])) ?></span><?php if (!empty($__c['cnt'])): ?><span class="nav-count" aria-hidden="true"><?= (int)$__c['cnt'] ?></span><?php endif; ?></a>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</div>
+
+  </div>
+<?php endif; ?>
+          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/archive') ?>"><?= h(gdy_clean_text($t_archive ?? 'الأرشيف')) ?></a>
+          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/page/contact') ?>"><?= h(gdy_clean_text($t_contact ?? 'تواصل')) ?></a>
         </nav>
       </div>
     </div>
   </div>
+
+  <!-- Search Overlay (BBC-style) -->
+  <div class="gdy-search-overlay" data-search-overlay aria-hidden="true">
+    <div class="gdy-search-overlay__backdrop" data-search-close></div>
+    <div class="gdy-search-overlay__panel" role="dialog" aria-modal="true" aria-label="<?= h($searchLabel ?? 'بحث') ?>">
+      <form class="gdy-search-overlay__form" action="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/search') ?>" method="get" role="search">
+        <label class="visually-hidden" for="gdyOverlaySearchQ"><?= h($searchLabel ?? 'بحث') ?></label>
+        <span class="gdy-search-overlay__icon" aria-hidden="true">
+          <svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#search"></use></svg>
+        </span>
+        <input id="gdyOverlaySearchQ" name="q" type="search" placeholder="<?= h($searchPlaceholder ?? 'ابحث عن خبر أو موضوع...') ?>" autocomplete="off" inputmode="search">
+        <button type="button" class="gdy-search-overlay__close" data-search-close aria-label="إغلاق">
+          <svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#close"></use></svg>
+        </button>
+      </form>
+      <div class="gdy-search-overlay__suggest" data-search-suggest></div>
+    </div>
+  </div>
+
 </header>
+
+<?php
+  // Breaking news ticker (global)
+  $__breaking = null;
+  if (isset($pdo) && ($pdo instanceof PDO)) {
+    try {
+      $__stmt = $pdo->query("
+        SELECT id, title, slug
+        FROM news
+        WHERE status = 'published'
+          AND deleted_at IS NULL
+          AND (publish_at IS NULL OR publish_at <= NOW())
+          AND is_breaking = 1
+        ORDER BY COALESCE(publish_at, published_at, created_at) DESC
+        LIMIT 1
+      ");
+      $__breaking = $__stmt ? $__stmt->fetch(PDO::FETCH_ASSOC) : null;
+    } catch (Throwable $__e) { $__breaking = null; }
+  }
+?>
+<?php if (!empty($__breaking['title']) && !empty($__breaking['slug'])): ?>
+  <div class="gdy-breaking-ticker" role="region" aria-label="الأخبار العاجلة">
+    <div class="container">
+      <div class="gdy-breaking-ticker__inner">
+        <span class="gdy-breaking-ticker__badge">عاجل</span>
+        <a class="gdy-breaking-ticker__link" href="<?= h(rtrim(($__navRoot ?: ($baseUrl ?: '')), '/') . '/news/' . rawurlencode((string)$__breaking['slug'])) ?>">
+          <?= h((string)$__breaking['title']) ?>
+        </a>
+      </div>
+    </div>
+  </div>
+<?php endif; ?>
 
 <div class="gdy-progress" id="gdyProgress"></div>

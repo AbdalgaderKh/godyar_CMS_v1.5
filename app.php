@@ -72,7 +72,7 @@ if (function_exists('godyar_route_base_prefix')) {
 // Support optional language prefixes: /ar, /en, /fr
 if ($__path !== '') {
     $parts = explode('/', $__path);
-    if (count($parts) >= 2 && in_array($parts[0], ['ar', 'en', 'fr'], true)) {
+    if (count($parts) >= 1 && in_array($parts[0], ['ar', 'en', 'fr'], true)) {
         array_shift($parts);
         $__path = implode('/', $parts);
     }
@@ -99,6 +99,15 @@ if (in_array($__path, ['login', 'register', 'logout'], true)) {
     // Fallback (shouldn't happen): show 404 rather than fatal.
     http_response_code(404);
     echo 'Not Found';
+    exit;
+}
+
+/**
+ * Cron endpoints (optional).
+ * NOTE: Protect with CRON_KEY in .env and pass ?key=... when calling over web.
+ */
+if ($__path === 'cron/publish-scheduled') {
+    require __DIR__ . '/tools/publish_scheduled.php';
     exit;
 }
 
@@ -207,6 +216,19 @@ if ($basePrefix !== '' && str_starts_with($requestPath, $basePrefix . '/')) {
     $requestPath = substr($requestPath, strlen($basePrefix));
 }
 $requestPath = '/' . ltrim($requestPath, '/');
+
+// ---------------------------------------
+// Strip optional language prefix from request path: /ar, /en, /fr
+// This ensures /ar/ (and similar) routes to the homepage and other routes work.
+// ---------------------------------------
+if (preg_match('#^/(ar|en|fr)(?:/|$)#i', $requestPath, $__m)) {
+    $lp = strtolower($__m[1]);
+    if (empty($_GET['lang'])) { $_GET['lang'] = $lp; }
+    $requestPath = substr($requestPath, 1 + strlen($lp));
+    if ($requestPath === '' ) { $requestPath = '/'; }
+    if ($requestPath[0] !== '/') { $requestPath = '/' . $requestPath; }
+}
+
 
 // ---------------------------------------------------------
 // 🔒 Legacy query param hardening: block LFI/Traversal via ?page = // ---------------------------------------------------------
@@ -460,6 +482,7 @@ $router->post('#^/admin/login/?$#', fn() => require __DIR__ . '/admin/login.php'
 
 // SEO endpoints
 $router->get('#^/sitemap\.xml$#', function () : void { require __DIR__ . '/seo/sitemap.php'; });
+$router->get('#^/sitemap-news\.xml$#', function () : void { require __DIR__ . '/seo/sitemap_news.php'; });
 $router->get('#^/rss\.xml$#', function () : void { require __DIR__ . '/seo/rss.php'; });
 $router->get('#^/rss/category/([^/]+)\.xml$#', function (array $m) : void { $slug = rawurldecode((string)$m[1]); require __DIR__ . '/seo/rss_category.php'; });
 $router->get('#^/rss/category/([^/]+)\.xml$#', function (array $m) : void { $slug = rawurldecode((string)$m[1]); require __DIR__ . '/seo/rss_category.php'; });

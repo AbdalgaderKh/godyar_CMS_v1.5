@@ -114,13 +114,7 @@ if (!isset($newsUrl) || !is_callable($newsUrl)) {
 <!-- 1 . شريط الإشعارات الذكية -->
 <?php if (!empty($smartNotifications)): ?>
 <div class = "smart-notifications" style = "margin-bottom: 2rem;">
-    <div class = "notifications-container" style = "
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 15px;
-        padding: 1rem;
-        color: white;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    ">
+    <div class = "notifications-container">
         <div style = "display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
             <?php foreach ($smartNotifications as $notification): ?>
             <div class = "notification-item" style = "
@@ -209,17 +203,8 @@ if (!isset($newsUrl) || !is_callable($newsUrl)) {
 
 <!-- 3 . الأخبار العاجلة -->
 <?php if (!empty($breakingNews)): ?>
-<div class = "breaking-news" style = "margin-bottom: 2rem;">
-    <div class = "breaking-header" style = "
-        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 10px 10px 0 0;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-weight: 700;
-    ">
+<div class="breaking-news">
+    <div class="breaking-header">
         <svg class = "gdy-icon" aria-hidden = "true" focusable = "false"><use href = "#more-h"></use></svg>
         <span>أخبار عاجلة</span>
         <div class = "live-indicator" style = "

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types = 1);
-
 /**
  * Godyar CMS — Version & Branding
  *
@@ -10,7 +8,7 @@ declare(strict_types = 1);
  */
 
 if (!defined('GODYAR_CMS_VERSION')) {
-    define('GODYAR_CMS_VERSION', 'v1.16.0');
+    define('GODYAR_CMS_VERSION', 'v3.1.1\20-pro');
 }
 
 // Default copyright text (can be overridden by defining GODYAR_CMS_COPYRIGHT)
