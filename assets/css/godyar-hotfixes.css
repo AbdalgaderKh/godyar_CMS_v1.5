@@ -689,3 +689,25 @@ img.card-img-top{
     justify-content: center !important;
   }
 }
+
+
+
+/* ===== v1.18.2 UI tweaks: categories link + breaking badge ===== */
+
+/* primary category link (same pill look) */
+.quick-nav__link--cat{
+  position: relative;
+}
+
+/* Force breaking "عاجل" badge to follow theme (override inline styles) */
+.breaking-badge{
+  background: var(--accent, #19c37d) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,0.25) !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12) !important;
+}
+
+/* ensure breaking bar label also matches theme */
+.as-breaking-label{
+  color: #ffffff !important;
+}

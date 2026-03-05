@@ -582,27 +582,25 @@ if (!isset($buildLangUrl) || !is_callable($buildLangUrl)) {
         <nav class="quick-nav" aria-label="روابط سريعة">
           <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($rootUrl ?: '/')) . '/') ?>"><?= h($t_home ?? 'الرئيسية') ?></a>
           <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/news') ?>"><?= h($t_news ?? 'الأخبار') ?></a>
+
+<?php
+  $__primaryCat = null;
+  if (!empty($__hdrCats) && is_array($__hdrCats)) {
+    $__primaryCat = $__hdrCats[0] ?? null;
+  }
+  if (is_array($__primaryCat)) {
+    $__pcSlug = (string)($__primaryCat['slug'] ?? '');
+    $__pcName = (string)($__primaryCat['name'] ?? '');
+    if ($__pcSlug !== '' && $__pcName !== '') {
+      $__pcHref = rtrim(($__navRoot ?: ($baseUrl ?: '')), '/') . '/category/' . rawurlencode($__pcSlug);
+?>
+<a class="quick-nav__link quick-nav__link--cat" href="<?= h($__pcHref) ?>"><?= h($__pcName) ?></a>
+<?php
+    }
+  }
+?>
           <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/archive') ?>"><?= h($t_archive ?? 'الأرشيف') ?></a>
           <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/page/contact') ?>"><?= h($t_contact ?? 'تواصل') ?></a>
-
-          <?php if (!empty($__hdrCats)): ?>
-            <div class="quick-nav__dd" data-hdr-dd>
-              <button type="button" class="quick-nav__dd-btn" aria-haspopup="menu" aria-expanded="false">
-                <span><?= h($t_categories ?? 'الأقسام') ?></span>
-                <svg class="gdy-icon chev" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#chevron-down"></use></svg>
-              </button>
-              <div class="quick-nav__menu" role="menu" aria-label="<?= h($t_categories ?? 'الأقسام') ?>">
-                <?php foreach ($__hdrCats as $__c):
-                  $__slug = (string)($__c['slug'] ?? '');
-                  $__name = (string)($__c['name'] ?? '');
-                  if ($__slug === '' || $__name === '') continue;
-                  $__href = rtrim(($__navRoot ?: ($baseUrl ?: '')), '/') . '/category/' . rawurlencode($__slug);
-                ?>
-                  <a role="menuitem" href="<?= h($__href) ?>" class="quick-nav__menu-item"><?= h($__name) ?></a>
-                <?php endforeach; ?>
-              </div>
-            </div>
-          <?php endif; ?>
         </nav>
       </div>
     </div>
