@@ -411,74 +411,219 @@ img.card-img-top{
 }
 
 
+/* === Header Search Pill (v1.16) === */
+/* Make header search compact (pill) */
+.site-header .header-search{
+  flex: 0 0 180px !important;
+  max-width: 180px !important;
+  width: 180px !important;
+}
+
+.site-header .header-search input,
+.site-header .header-search .search-input{
+  height: 32px !important;
+  line-height: 32px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  font-size: 13px !important;
+}
+
+/* Prevent any parent container from forcing tall search area */
+.site-header .header-search,
+.site-header .search-box,
+.site-header .search-form,
+.site-header .header-search-wrapper{
+  min-height: 0 !important;
+  padding: 0 !important;
+}
+
+/* If theme uses a hero/overlay search panel on home, hide it to avoid duplicate huge box */
+.home .hero-search,
+.home .search-panel,
+.home .home-search-box{
+  display: none !important;
+}
+
+
 /* ==========================================================
-   Compact header search (requested)
-   - Make the header search bar narrow like the reference image
-   - Loaded last via godyar-hotfixes.css
+   v1.17 UI: Header search pill + prevent oversized header bar
+   - Forces compact height and width (desktop & mobile)
+   - Prevents header secondary inner from growing tall due to wrap/padding
    ========================================================== */
 
-.site-header .header-search,
-header .header-search{
-  flex: 0 0 200px !important;
-  width: 200px !important;
-  max-width: 200px !important;
+.site-header .header-secondary-inner{
+  padding: 8px 12px !important;
+  gap: 10px !important;
+  min-height: 0 !important;
+}
+
+.site-header .header-search{
+  flex: 0 0 180px !important;
+  max-width: 180px !important;
+  width: 180px !important;
+  margin: 0 !important;
+}
+
+.site-header .header-search input[type="search"],
+.site-header .header-search input{
+  height: 32px !important;
+  line-height: 32px !important;
+  padding: 0 12px !important;
+  padding-inline-start: 34px !important;
+  border-radius: 999px !important;
+  font-size: 13px !important;
+}
+
+/* keep icon centered with new height */
+.site-header .header-search .header-search-icon,
+.site-header .header-search-icon{
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+/* Mobile: full width but still compact height */
+@media (max-width: 991.98px){
+  .site-header .header-secondary-inner{
+    padding: 10px 12px !important;
+    flex-wrap: wrap !important;
+  }
+  .site-header .header-search{
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  .site-header .header-search input[type="search"],
+  .site-header .header-search input{
+    height: 34px !important;
+    line-height: 34px !important;
+  }
+}
+
+
+/* ===== v1.17.1 Header cleanup: remove categories bar background + keep search compact ===== */
+.site-header .cats-toggle,
+.site-header .cats-nav{
+  display: none !important;
+}
+
+/* remove the big rounded background from the secondary header strip */
+.site-header .header-secondary,
+.site-header .header-secondary .container,
+.site-header .header-secondary-inner{
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+.site-header .header-secondary{
+  padding: 6px 0 !important;
+}
+
+.site-header .header-secondary-inner{
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  gap: 10px !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+/* ensure the search doesn't create extra height */
+.site-header .header-search{
+  margin: 0 !important;
   align-self: center !important;
 }
 
-.site-header .header-search input,
-header .header-search input{
-  height: 30px !important;
-  padding: 0 10px !important;
-  padding-inline-start: 30px !important;
-  border-radius: 999px !important;
-  font-size: 13px !important;
-  line-height: 30px !important;
+
+/* ===== v1.18: Global-news header (inline search + quick nav) ===== */
+
+/* Keep header tallness compact */
+.site-header .header-secondary{
+  padding: 6px 0 !important;
 }
 
-/* keep icon nicely aligned inside pill */
-.site-header .header-search-icon,
-header .header-search-icon{
+/* Inline search next to logo (desktop) */
+.site-header .header-search--inline{
+  position: relative !important;
+  flex: 0 0 240px !important;
+  max-width: 240px !important;
+  margin-inline: 14px !important;
+}
+
+.site-header .header-search--inline .header-search-icon{
+  position: absolute !important;
   inset-inline-start: 10px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  opacity: .9;
+  opacity: .9 !important;
 }
 
-.site-header .header-search-icon svg,
-header .header-search-icon svg{
-  width: 16px !important;
-  height: 16px !important;
+.site-header .header-search--inline input[type="search"],
+.site-header .header-search--inline input{
+  width: 100% !important;
+  height: 34px !important;
+  line-height: 34px !important;
+  padding-inline-start: 34px !important;
+  padding-inline-end: 12px !important;
+  border-radius: 999px !important;
+  font-size: 13px !important;
 }
 
-/* If any state class forces the search container open, keep it compact */
-body.hdr-search-open .header-search{
-  flex: 0 0 200px !important;
-  max-width: 200px !important;
+/* Hide the mobile search icon button on desktop (we now have inline search) */
+@media (min-width: 900px){
+  .site-header .hdr-search-btn{ display:none !important; }
 }
 
-
-/* ===== Fix search height ===== */
-.site-header .header-search,
-.site-header .search-box,
-.site-header .search-form{
-    height:34px !important;
-    min-height:0 !important;
-    padding:0 !important;
+/* Quick nav */
+.site-header .quick-nav{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  gap: 10px !important;
+  align-items:center !important;
 }
 
-.site-header .header-search input,
-.site-header .search-input{
-    height:34px !important;
-    line-height:34px !important;
-    padding:0 12px !important;
-    font-size:13px !important;
-    border-radius:20px !important;
+.site-header .quick-nav__link{
+  display:inline-flex !important;
+  align-items:center !important;
+  padding: 6px 12px !important;
+  border-radius: 999px !important;
+  text-decoration:none !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  background: rgba(255,255,255,0.30) !important;
+  border: 1px solid rgba(255,255,255,0.20) !important;
+  backdrop-filter: blur(8px) !important;
 }
 
-.site-header .header-search-wrapper{
-    height:34px !important;
+/* Remove any leftover categories UI (if any theme reintroduces it) */
+.site-header .cats-toggle,
+.site-header .cats-nav,
+.site-header .categories-toggle,
+.site-header .header-categories,
+.site-header .categories-dropdown{
+  display:none !important;
 }
 
-.site-header .search-panel{
-    padding:6px !important;
+/* Mobile: make inline search full width but not tall */
+@media (max-width: 899px){
+  .site-header .header-inner{
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+  .site-header .header-search--inline{
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  .site-header .header-search--inline input[type="search"],
+  .site-header .header-search--inline input{
+    height: 36px !important;
+    line-height: 36px !important;
+  }
+  .site-header .quick-nav{
+    justify-content: center !important;
+  }
 }

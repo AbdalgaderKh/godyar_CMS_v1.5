@@ -484,6 +484,15 @@ if (!isset($buildLangUrl) || !is_callable($buildLangUrl)) {
         </div>
       </a>
 
+
+      <form class="header-search header-search--inline" action="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/search') ?>" method="get" role="search" aria-label="<?= h($searchLabel ?? 'بحث') ?>">
+        <label class="visually-hidden" for="hdrSearchQInline"><?= h($searchLabel ?? 'بحث') ?></label>
+        <span class="header-search-icon" aria-hidden="true">
+          <svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#search"></use></svg>
+        </span>
+        <input id="hdrSearchQInline" type="search" placeholder="<?= h($searchPlaceholder ?? 'ابحث عن خبر أو موضوع...') ?>" name="q" autocomplete="off" inputmode="search">
+      </form>
+
       <div class="hdr-utils">
         <button type="button" class="hdr-dd-btn hdr-search-btn" id="gdyMobileSearchBtn" title="بحث" aria-label="بحث" data-mobile-search-btn>
           <svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#search"></use></svg>
@@ -544,66 +553,15 @@ if (!isset($buildLangUrl) || !is_callable($buildLangUrl)) {
     </div>
   </div>
 
-  <div class="header-secondary">
+  <div class="header-secondary" role="navigation" aria-label="التنقل السريع">
     <div class="container">
       <div class="header-secondary-inner">
-        <button type="button" class="cats-toggle" id="gdyCatsToggle" aria-expanded="false" aria-controls="gdyCatsNav" data-cats-toggle>
-          <span class="gdy-inline-flex-gap">
-            <span>الفئات</span>
-          </span>
-          <svg class="gdy-icon chev" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#chevron-down"></use></svg>
-        </button>
-
-        <nav id="gdyCatsNav" class="cats-nav" aria-label="أقسام الموقع" data-cats-nav>
-          <a href="<?= h(($__navRoot ?: ($rootUrl ?: '/')) ) ?>" class="cats-link cats-link--home">
-            <svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#home"></use></svg>
-            <span>الرئيسية</span>
-          </a>
-
-<?php
-          // Fallback: load categories for header if not provided by controller
-          if (empty($categories) || !is_array($categories)) {
-            try {
-              $pdo = $GLOBALS['pdo'] ?? $GLOBALS['db'] ?? $GLOBALS['DB'] ?? null;
-              if ($pdo instanceof PDO) {
-                $stmt = $pdo->prepare("SELECT name, slug FROM categories WHERE is_active = 1 ORDER BY sort_order ASC, id ASC");
-                $stmt->execute();
-                $categories = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-              }
-            } catch (Throwable $e) {
-              if (function_exists('gdy_log')) {
-                gdy_log('warn', 'header categories load failed', ['err' => $e->getMessage()]);
-              }
-            }
-          }
-?>
-
-          <?php if (!empty($categories) && is_array($categories)): ?>
-            <?php foreach ($categories as $cat):
-              $catName = (string)($cat['name'] ?? $cat['title'] ?? '');
-              $catSlug = (string)($cat['slug'] ?? '');
-              if ($catSlug === '') continue;
-
-              // Language-safe base (supports /ar, /en, /fr or root)
-              $catUrl = ($__navRoot ?: ($navBaseUrl ?: ($baseUrl ?: '')));
-              $catUrl = rtrim((string)$catUrl, '/') . '/category/' . rawurlencode($catSlug);
-            ?>
-              <a href="<?= h($catUrl) ?>" class="cats-link"><span><?= h($catName) ?></span></a>
-            <?php endforeach; ?>
-          <?php endif; ?>
-
-          <a href="<?= h(rtrim($__navRoot ?: ($baseUrl ?: ''), '/') . '/archive') ?>" class="cats-link"><span>الأرشيف</span></a>
-          <a href="<?= h(rtrim($__navRoot ?: ($baseUrl ?: ''), '/') . '/contact') ?>" class="cats-link"><span>تواصل</span></a>
-
+        <nav class="quick-nav" aria-label="روابط سريعة">
+          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($rootUrl ?: '/')) . '/') ?>"><?= h($t_home ?? 'الرئيسية') ?></a>
+          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/news') ?>"><?= h($t_news ?? 'الأخبار') ?></a>
+          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/archive') ?>"><?= h($t_archive ?? 'الأرشيف') ?></a>
+          <a class="quick-nav__link" href="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/page/contact') ?>"><?= h($t_contact ?? 'تواصل') ?></a>
         </nav>
-
-        <form class="header-search" action="<?= h(($__navRoot ?: ($baseUrl ?: '')) . '/search') ?>" method="get">
-          <label class="visually-hidden" for="hdrSearchQ"><?= h($searchLabel ?? 'بحث') ?></label>
-          <input id="hdrSearchQ" type="search" placeholder="<?= h($searchPlaceholder ?? 'ابحث عن خبر أو موضوع...') ?>" name="q" autocomplete="off" inputmode="search" aria-label="<?= h($searchLabel ?? 'بحث') ?>">
-          <span class="header-search-icon">
-            <svg class="gdy-icon" aria-hidden="true" focusable="false"><use href="<?= h($asset('assets/icons/godyar-icons.svg')) ?>#search"></use></svg>
-          </span>
-        </form>
       </div>
     </div>
   </div>

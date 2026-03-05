@@ -41,10 +41,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($__gdy_embed === false || (string)
                 }
             }
             $allowed = ['image/png' => 'png','image/jpeg' => 'jpg','image/webp' => 'webp','image/gif' => 'gif','image/svg+xml' => 'svg'];
+            // Fallback by extension when finfo returns empty/unknown (common for SVG)
+            $extGuess = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+            if ((empty($mime) || isset($allowed[$mime]) === false) && in_array($extGuess, ['png','jpg','jpeg','webp','gif','svg'], true)) {
+                if ($extGuess === 'jpeg') { $extGuess = 'jpg'; }
+                if ($extGuess === 'jpg')  { $mime = 'image/jpeg'; }
+                if ($extGuess === 'png')  { $mime = 'image/png'; }
+                if ($extGuess === 'webp') { $mime = 'image/webp'; }
+                if ($extGuess === 'gif')  { $mime = 'image/gif'; }
+                if ($extGuess === 'svg')  { $mime = 'image/svg+xml'; }
+            }
+
             if (isset($allowed[$mime]) === false) {
                 throw new RuntimeException('صيغة الشعار غير مدعومة.');
             }
-	            $root = defined('ROOT_PATH') ? rtrim((string)ROOT_PATH, '/\\') : rtrim(dirname(__DIR__, 3), '/\\');
+	            $root = defined('ROOT_PATH') ? rtrim((string)ROOT_PATH, '/\\') : rtrim(dirname(__DIR__, 2), '/\\');
             $dir = $root . '/assets/uploads/site/';
             if (is_dir($dir) === false) { gdy_mkdir($dir, 0755, true); }
             $ext = $allowed[$mime];
@@ -54,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($__gdy_embed === false || (string)
                 throw new RuntimeException('تعذر حفظ الشعار على السيرفر.');
             }
             gdy_chmod($dest, 0644);
-            $logoUrl = rtrim((string)base_url(), '/') . '/assets/uploads/site/' . $fn;
+            $logoUrl = '/assets/uploads/site/' . $fn; // store relative path (v1.16)
         } else {
             throw new RuntimeException('فشل رفع الشعار.');
         }
@@ -86,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($__gdy_embed === false || (string)
             if ((isset($allowed[$mime]) === false)) {
                 throw new RuntimeException('صيغة الأيقونة غير مدعومة.');
             }
-	            $root = defined('ROOT_PATH') ? rtrim((string)ROOT_PATH, '/\\') : rtrim(dirname(__DIR__, 3), '/\\');
+	            $root = defined('ROOT_PATH') ? rtrim((string)ROOT_PATH, '/\\') : rtrim(dirname(__DIR__, 2), '/\\');
             $dir = $root . '/assets/uploads/site/';
             if (!is_dir($dir)) { gdy_mkdir($dir, 0755, true); }
             $ext = $allowed[$mime];

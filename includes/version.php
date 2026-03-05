@@ -10,7 +10,7 @@ declare(strict_types = 1);
  */
 
 if (!defined('GODYAR_CMS_VERSION')) {
-    define('GODYAR_CMS_VERSION', 'v1.6.0-alpha1');
+    define('GODYAR_CMS_VERSION', 'v1.16.0');
 }
 
 // Default copyright text (can be overridden by defining GODYAR_CMS_COPYRIGHT)
