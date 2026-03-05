@@ -25,7 +25,7 @@ $categories = is_array($categories ?? null) ? $categories : [];
 $news = $news ?? ($newsItems ?? ($newsList ?? ($items ?? [])));
 $news = is_array($news) ? $news : [];
 
-$catName = (string)($category['name'] ?? '');
+$catName = (string)(gdy_tr('category', $category['id'], 'name', $category['name']) ?? '');
 $catSlug = (string)($category['slug'] ?? '');
 
 // Build canonical category URL safely.

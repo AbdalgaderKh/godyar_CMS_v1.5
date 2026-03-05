@@ -745,6 +745,18 @@ foreach ($staticPluginLinks as $it) {
                 <div class = "admin-sidebar__link-label"><?php echo h(__('الإعدادات')); ?></div>
                 <div class = "admin-sidebar__link-sub"><?php echo h(__('إعدادات الموقع العامة')); ?></div>
               </div>
+
+        <div class = "admin-sidebar__link-card <?php echo $currentPage === 'translations' ? 'is-active' : ''; ?>" data-search = "الترجمة translations i18n">
+          <a class = "admin-sidebar__link" href = "<?php echo h($adminBase); ?>/translations.php">
+            <div class = "admin-sidebar__link-icon">
+              <svg aria-hidden = "true" focusable = "false"><use href = "#language"></use></svg>
+            </div>
+            <div class = "admin-sidebar__link-text">
+              <div class = "admin-sidebar__link-label"><?php echo h(__('الترجمة')); ?></div>
+              <div class = "admin-sidebar__link-sub"><?php echo h(__('إدارة ترجمات الواجهة والمحتوى')); ?></div>
+            </div>
+          </a>
+        </div>
             </div>
             <svg class = "gdy-icon admin-sidebar__link-arrow" aria-hidden = "true" focusable = "false"><use href = "#chevron-left"></use></svg>
           </a>

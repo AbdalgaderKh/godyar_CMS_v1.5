@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /*
 |--------------------------------------------------------------------------
 | Godyar CMS - Bootstrap (Stable, shared-hosting friendly)

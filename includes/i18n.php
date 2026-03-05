@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types = 1);
-
 /**
  * Frontend i18n (AR/EN/FR)
  * ------------------------
@@ -16,7 +13,7 @@ declare(strict_types = 1);
  */
 
 if (!function_exists('gdy_session_start')) {
-    function gdy_session_start(): void
+    function gdy_session_start()
     {
         if (session_status() !== PHP_SESSION_ACTIVE && !headers_sent()) {
             session_start();
@@ -29,7 +26,7 @@ if (!defined('GDY_SUPPORTED_LANGS')) {
 }
 
 if (!function_exists('gdy_set_cookie_rfc')) {
-    function gdy_set_cookie_rfc(string $name, string $value, int $ttlSeconds, string $path = '/', bool $secure = false, bool $httpOnly = true, string $sameSite = 'Lax'): void
+    function gdy_set_cookie_rfc($name, $value, $ttlSeconds, $path = '/', $secure = false, $httpOnly = true, $sameSite = 'Lax')
     {
         if (headers_sent()) return;
         $ttlSeconds = max(0, $ttlSeconds);
@@ -46,7 +43,7 @@ if (!function_exists('gdy_set_cookie_rfc')) {
 }
 
 if (!function_exists('gdy_lang')) {
-    function gdy_lang(): string
+    function gdy_lang()
     {
         $supported = GDY_SUPPORTED_LANGS;
 
@@ -83,14 +80,14 @@ if (!function_exists('gdy_lang')) {
 }
 
 if (!function_exists('gdy_is_rtl')) {
-    function gdy_is_rtl(): bool
+    function gdy_is_rtl()
     {
         return gdy_lang() === 'ar';
     }
 }
 
 if (!function_exists('gdy_i18n_safe_file')) {
-    function gdy_i18n_safe_file(string $file, string $baseDir): ?string
+    function gdy_i18n_safe_file($file, $baseDir): ?string
     {
         $base = rtrim((string)realpath($baseDir), '/');
         if ($base === '') return null;
@@ -105,7 +102,7 @@ if (!function_exists('gdy_i18n_safe_file')) {
 }
 
 if (!function_exists('gdy_locale_dict')) {
-    function gdy_locale_dict(): array
+    function gdy_locale_dict()
     {
         static $cache = [];
         $lang = gdy_lang();
@@ -142,7 +139,7 @@ if (!function_exists('__')) {
      *-__('KEY', 'fallback')
      *-__('KEY', ['name' => 'X'], 'fallback')
      */
-    function __($key, $varsOrFallback = null, $fallback = null): string
+    function __($key, $varsOrFallback = null, $fallback = null)
     {
         $key = trim((string)$key);
         if ($key === '') return '';
@@ -180,3 +177,89 @@ if (!function_exists('__')) {
         return $out;
     }
 }
+
+// ----------------------------------------------------------------------------
+// Database-backed translations (PRO)
+// ----------------------------------------------------------------------------
+
+if (!function_exists('gdy_i18n_pdo')) {
+    function gdy_i18n_pdo() {
+        if (function_exists('gdy_pdo_safe')) {
+            try { return gdy_pdo_safe(); } catch (Exception $e) { return null; }
+        }
+        return null;
+    }
+}
+
+if (!function_exists('gdy_i18n_db_string')) {
+    function gdy_i18n_db_string($key, $lang) {
+        $pdo = gdy_i18n_pdo();
+        if (!$pdo) return null;
+        try {
+            $st = $pdo->prepare("SELECT v FROM i18n_strings WHERE lang = ? AND k = ? LIMIT 1");
+            $st->execute(array($lang, $key));
+            $row = $st->fetch(PDO::FETCH_ASSOC);
+            return $row ? $row['v'] : null;
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+}
+
+if (!function_exists('gdy_i18n_db_field')) {
+    function gdy_i18n_db_field($scope, $itemId, $lang, $field) {
+        $pdo = gdy_i18n_pdo();
+        if (!$pdo) return null;
+        try {
+            $st = $pdo->prepare("SELECT value FROM i18n_fields WHERE scope = ? AND item_id = ? AND lang = ? AND field = ? LIMIT 1");
+            $st->execute(array($scope, (int)$itemId, $lang, $field));
+            $row = $st->fetch(PDO::FETCH_ASSOC);
+            return $row ? $row['value'] : null;
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+}
+
+if (!function_exists('gdy_tr')) {
+    /**
+     * Translate a content field (news/category/page/etc.)
+     * Example: gdy_tr('news', $news['id'], 'title', $news['title'])
+     */
+    function gdy_tr($scope, $itemId, $field, $fallback = '') {
+        $lang = function_exists('gdy_lang') ? gdy_lang() : 'ar';
+        $v = gdy_i18n_db_field($scope, $itemId, $lang, $field);
+        if ($v !== null && $v !== '') return $v;
+        return $fallback;
+    }
+}
+
+
+
+if (!function_exists('gdy_t')) {
+    /**
+     * UI string translate (DB-first, then dictionary __()).
+     */
+    function gdy_t($key, $varsOrFallback = null, $fallback = null) {
+        $lang = function_exists('gdy_lang') ? gdy_lang() : 'ar';
+        $db = gdy_i18n_db_string($key, $lang);
+        if ($db !== null && $db !== '') {
+            $out = (string)$db;
+            $vars = array();
+            $fb = null;
+
+            if (is_array($varsOrFallback)) { $vars = $varsOrFallback; $fb = $fallback; }
+            else { $fb = $varsOrFallback; }
+
+            if ($vars) {
+                foreach ($vars as $k => $v) {
+                    $out = str_replace('{' . (string)$k . '}', (string)$v, $out);
+                }
+            }
+            return $out;
+        }
+        if (function_exists('__')) return __($key, $varsOrFallback, $fallback);
+        return is_string($fallback) ? $fallback : $key;
+    }
+}
+

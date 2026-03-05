@@ -13,7 +13,7 @@ if (is_file($modern)) {
     // so we must render the full page with shared frontend header/footer.
 
     // Meta vars consumed by `frontend/views/partials/header.php`.
-    $catName  = isset($category['name']) ? (string)$category['name'] : '';
+    $catName  = isset(gdy_tr('category', $category['id'], 'name', $category['name'])) ? (string)gdy_tr('category', $category['id'], 'name', $category['name']) : '';
     $siteName = isset($siteSettings['site_name']) ? (string)$siteSettings['site_name'] : 'Godyar News';
     $meta_title     = $catName ? ($catName . ' - ' . $siteName) : $siteName;
     $meta_description = isset($category['description']) && trim((string)$category['description']) !== ''
