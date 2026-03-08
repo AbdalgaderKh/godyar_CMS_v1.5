@@ -1,0 +1,19 @@
+<?php
+// Force PHP error logging (safe mode)
+
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
+// Try storage log first
+$log1 = __DIR__ . '/../storage/logs/.php.error.log';
+$log2 = __DIR__ . '/../error_log';
+
+if (is_dir(dirname($log1))) {
+    ini_set('error_log', $log1);
+} else {
+    ini_set('error_log', $log2);
+}
+
+// Test write
+@error_log("Runtime logging initialized: " . date('Y-m-d H:i:s'));
+?>

@@ -1,0 +1,243 @@
+/* --- Header interactions (fallback rules) --- */
+.hdr-dropdown .hdr-dd-menu{ display:none; }
+.hdr-dropdown.open .hdr-dd-menu{ display:block; }
+
+/* Cats nav toggle (only collapse on smaller screens) */
+@media (max-width: 992px){
+  .cats-nav{ display:none; }
+  .cats-nav.open{ display:flex; }
+}
+
+/* Mobile search fallback (when overlay not present) */
+body.hdr-search-open .header-search{ display:block !important; }
+/* Godyar CMS — Responsive fixes & small UX improvements */
+
+/* Improve tap targets on mobile */
+@media (max-width: 768px) {
+  .site-header .hdr-dd-btn,
+  .site-header a,
+  .site-header button {
+    min-height: 44px;
+  }
+
+  /* Prevent header from overflowing on small screens */
+  .header-inner {
+    gap: 10px;
+  }
+
+  .brand-text .brand-subtitle {
+    display: none;
+  }
+
+  /* Make containers breathe */
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* Images should never overflow */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Improve readability */
+body {
+  text-rendering: optimizeLegibility;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* PRO UI polish: contrast + header links                                      */
+/* -------------------------------------------------------------------------- */
+:root[data-theme="dark"]{
+  --gdy-text-strong: #f8fafc;
+  --gdy-text-soft: rgba(226,232,240,.86);
+}
+:root[data-theme="light"]{
+  --gdy-text-strong: #0f172a;
+  --gdy-text-soft: rgba(15, 23, 42, .78);
+}
+.site-header{
+  color: var(--gdy-text-strong);
+}
+.site-header a,
+.site-header button,
+.site-header .hdr-dd-btn,
+.site-header .cats-link,
+.site-header .brand-block{
+  color: inherit;
+}
+.site-header .cats-link{
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  padding:.55rem .8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,.20);
+  background: rgba(15,23,42,.35);
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+.site-header .cats-link:hover{
+  background: rgba(15,23,42,.55);
+  border-color: rgba(148,163,184,.34);
+  transform: translateY(-1px);
+}
+.site-header .cats-link.cats-link--home{
+  border-color: rgba(255,255,255,.20);
+  background: rgba(255,255,255,.10);
+}
+.site-header .cats-nav{ gap:.35rem; }
+.site-header .header-search input{
+  font-weight: 650;
+  letter-spacing: .2px;
+  min-height: 44px;
+  padding: .65rem 1rem;
+}
+
+/* Prevent the header search from becoming oversized on some theme/layout combos */
+.site-header .header-search{
+  width: 100%;
+  max-width: 520px;
+}
+.site-header .brand-title{ font-weight: 900; }
+
+/* -------------------------------------------------------------------------- */
+/* THEME TINT INTENSITY: header + footer should match selected theme color     */
+/* -------------------------------------------------------------------------- */
+/*
+  Goal:
+  - Increase tint density so blue/red/green themes look saturated
+  - Make footer actually use theme color (instead of neutral surface)
+*/
+
+/* Stronger shared gradients (can be overridden per theme if needed) */
+.theme-default,
+.theme-red,
+.theme-blue,
+.theme-green,
+.theme-brown,
+.theme-purple,
+.theme-orange,
+.theme-teal,
+.theme-pink{
+  --on-primary: #ffffff;
+  --on-primary-muted: rgba(255,255,255,.82);
+  --header-bg: linear-gradient(180deg,
+      rgba(var(--primary-rgb), .88),
+      rgba(var(--primary-rgb), .60));
+  --footer-bg: linear-gradient(180deg,
+      rgba(var(--primary-rgb), .95),
+      rgba(var(--primary-rgb), .82));
+}
+
+/* Header secondary strip: more visible theme tint */
+.site-header .header-secondary{
+  background: rgba(var(--primary-rgb), .28) !important;
+}
+
+/* Footer: force theme background + readable foreground */
+.gdy-footer-top{
+  background: var(--footer-bg) !important;
+  color: var(--text-inv);
+}
+.gdy-footer-bottom{
+  background: rgba(var(--primary-rgb), .92) !important;
+  color: rgba(255,255,255,.90);
+}
+
+/* Footer cards: keep glass look but on top of saturated footer */
+.gdy-footer-card{
+  background: rgba(255,255,255,.10) !important;
+  border-color: rgba(255,255,255,.18) !important;
+}
+
+.gdy-footer a{
+  color: rgba(255,255,255,.92);
+}
+.gdy-footer a:hover{
+  color: #ffffff;
+}
+
+/* Footer pills/links inside cards */
+.gdy-footer .gdy-footer-links a,
+.gdy-footer .gdy-footer-card a{
+  color: rgba(255,255,255,.92);
+}
+.gdy-footer .gdy-footer-links a:hover,
+.gdy-footer .gdy-footer-card a:hover{
+  color: #ffffff;
+}
+
+/* =========================================
+   UI Contrast fixes (Header + Social icons)
+   ========================================= */
+
+/* Header: avoid Bootstrap default link colors inside header */
+.site-header .brand-block,
+.site-header .brand-block:visited,
+.site-header .brand-block:hover,
+.site-header .cats-link,
+.site-header .cats-link:visited,
+.site-header .cats-link:hover,
+.site-header .hdr-dd-btn,
+.site-header .hdr-dd-menu a,
+.site-header .hdr-dd-menu a:visited{
+  /* Use theme variable that always exists */
+  color: var(--on-primary) !important;
+}
+
+/* Slightly stronger pills so text/icons stay readable over gradients */
+.site-header .hdr-dd-btn,
+.site-header .cats-toggle{
+  background: rgba(255,255,255,.22) !important;
+  border-color: rgba(255,255,255,.38) !important;
+}
+.site-header .hdr-dd-btn:hover,
+.site-header .cats-toggle:hover{
+  background: rgba(255,255,255,.30) !important;
+  border-color: rgba(255,255,255,.48) !important;
+}
+
+/* Improve text legibility on colored themes */
+.site-header .brand-title,
+.site-header .cats-link,
+.site-header .hdr-dd-btn span{
+  text-shadow: 0 1px 2px rgba(0,0,0,.25);
+}
+
+/* Footer social icons: the sprite uses placeholder shapes (circle + white path).
+   On light backgrounds this can look like "circles only".
+   Force icon paths to follow currentColor and hide the placeholder circle. */
+.gdy-social a{
+  /* Footer is tinted with --primary; keep icons readable on any theme */
+  color: rgba(255,255,255,.92) !important;
+  background: rgba(255,255,255,.14) !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+}
+.gdy-social a:hover{
+  color: #111827 !important;
+  background: rgba(255,255,255,.92) !important;
+  border-color: rgba(255,255,255,.92) !important;
+}
+/* Make sure the sprite renders as an icon (not just a circle) */
+.gdy-social a .gdy-icon{ fill: currentColor !important; stroke: currentColor !important; }
+
+/* Push toast: improve text readability */
+.gdy-push-toast{
+  background: rgba(255,255,255,.92) !important;
+  color: #111827 !important;
+  border: 1px solid rgba(0,0,0,.10) !important;
+}
+.gdy-push-toast__title{ color:#111827 !important; font-weight:700; }
+.gdy-push-toast__desc{ color: rgba(17,24,39,.78) !important; }

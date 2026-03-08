@@ -1,0 +1,25 @@
+# Environment / secrets
+.env
+config.php
+install.lock
+
+# Runtime
+cache/
+logs/
+tmp/
+backup/
+uploads/
+
+# Dependencies
+/vendor/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# PHPUnit / composer artifacts
+composer.lock
+
+/storage/

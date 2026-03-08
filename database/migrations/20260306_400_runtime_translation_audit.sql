@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS runtime_translation_audit (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    page_url VARCHAR(255) NOT NULL,
+    page_lang VARCHAR(5) NOT NULL,
+    detected_text MEDIUMTEXT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -1,0 +1,7 @@
+# Content Security Policy
+# CSP uses a per-request nonce, so it MUST be set by PHP (see includes/security_headers.php).
+# We only ensure Apache does not inject a static CSP here.
+
+<IfModule mod_headers.c>
+  Header always unset Content-Security-Policy
+</IfModule>

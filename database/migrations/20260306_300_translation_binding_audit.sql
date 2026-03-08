@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS translation_binding_audit (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    file_path VARCHAR(255) NOT NULL,
+    translation_key VARCHAR(120) NOT NULL,
+    fallback_text VARCHAR(255) NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

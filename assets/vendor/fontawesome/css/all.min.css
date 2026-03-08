@@ -1,0 +1,3 @@
+/* Local shim to keep original Godyar Admin V2 link working.
+   Loads Font Awesome Free from a CDN when running this package standalone. */
+@import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css');

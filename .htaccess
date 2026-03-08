@@ -1,0 +1,157 @@
+# Godyar CMS — Front Controller routing
+# Routes pretty URLs like /profile to app.php
+
+RewriteEngine On
+
+# Force trailing slash for language prefixes (SEO)
+RewriteCond %{REQUEST_URI} ^/(ar|en|fr)$
+RewriteRule ^(ar|en|fr)$ /$1/ [R=301,L]
+
+
+# Always serve static assets directly
+RewriteRule ^assets/ - [L]
+RewriteRule ^uploads/ - [L]
+
+  # RewriteBase is optional. If you install the project inside a subfolder,
+  # you may set it to that folder (e.g. RewriteBase /godyar/).
+  # RewriteBase /
+
+# =========================
+# Force HTTPS
+# =========================
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+
+# =========================
+# Admin routing hardening
+# Canonicalize duplicated admin path fragments that can happen with broken relative links
+RewriteRule ^admin/admin/(.*)$ /admin/$1 [R=302,L,NC]
+RewriteRule ^admin/([^/]+)/admin/\1/(.*)$ /admin/$1/$2 [R=302,L,NC]
+
+# =========================
+# Prevent /admin from being routed to app.php on some setups
+# (common cause of "admin redirects to homepage").
+RewriteRule ^admin$ admin/ [R=301,L]
+# Ensure /admin and anything under it never falls through to the front controller
+RewriteRule ^admin/?$ admin/index.php [L,NC]
+
+# Map common pretty admin endpoints to their real PHP files
+RewriteRule ^admin/login/?$ admin/login.php [L,NC]
+RewriteRule ^admin/logout/?$ admin/logout.php [L,NC]
+RewriteRule ^admin/news/index/?$ admin/news/index.php [L,NC]
+RewriteCond %{REQUEST_URI} ^/admin(/|$) [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin/(.*)$ admin/$1 [L,NC]
+
+
+# =========================
+# Godyar CMS — Security hardening
+# =========================
+Options -Indexes
+
+# Block access to hidden files (except .well-known)
+RewriteCond %{REQUEST_URI} !^/\.well-known/
+RewriteRule (^|/)\. - [F,L]
+
+# Block sensitive files
+<FilesMatch "(?i)^(\.env|\.env\..*|composer\.(json|lock)|package\.(json|lock)|phpunit\.xml|\.gitignore|\.gitattributes|\.htaccess\.bak|\.DS_Store)$">
+  Require all denied
+</FilesMatch>
+
+# Block internal directories that should never be served directly
+RewriteRule ^(vendor|includes|src|database|docs|storage|cache|tools)(/|$) - [F,L]
+
+# Basic security headers (Apache)
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  # HSTS (enable only when HTTPS is stable on your domain)
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
+
+  # Content Security Policy
+  # IMPORTANT: CSP uses a per-request nonce, so it MUST be set by PHP (see includes/security_headers.php).
+  # A static CSP set here would break nonce-based scripts.
+  Header always unset Content-Security-Policy
+
+  # Reduce XSS risk on older browsers (modern browsers ignore/limit this)
+  Header always set X-XSS-Protection "0"
+
+</IfModule>
+
+
+
+# =========================
+# Compression (Gzip/Brotli)
+# =========================
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/plain text/css text/javascript application/javascript application/json application/xml text/xml image/svg+xml
+</IfModule>
+
+<IfModule mod_brotli.c>
+  BrotliCompressionQuality 5
+  AddOutputFilterByType BROTLI_COMPRESS text/plain text/css text/javascript application/javascript application/json application/xml text/xml image/svg+xml
+</IfModule>
+# Cache static assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/avif "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/png  "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType text/css   "access plus 14 days"
+  ExpiresByType application/javascript "access plus 14 days"
+  ExpiresByType font/woff2 "access plus 180 days"
+</IfModule>
+
+# Serve existing files/directories as-is
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Everything else goes to app.php
+RewriteRule ^ app.php [L,QSA]
+
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(?:css|js|mjs|png|jpe?g|webp|svg|gif|ico|woff2?|ttf|eot|mp4|mp3)$">
+    Header set Cache-Control "public, max-age=1209600, stale-while-revalidate=86400, immutable"
+  </FilesMatch>
+</IfModule>
+
+
+# -------------------------
+# Security: block sensitive files
+# -------------------------
+<FilesMatch "(?i)^(?:\.env|composer\.json|composer\.lock|phpinfo\.php|info\.php|test\.php|error_log)$">
+  Require all denied
+</FilesMatch>
+
+# Block backup archives / editor backups
+<FilesMatch "(?i)\.(?:bak|old|swp|swo|zip|tar|gz|7z)(?:_.*)?$">
+  Require all denied
+</FilesMatch>
+
+# Prevent directory listing
+Options -Indexes
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php84” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php84___lsphp .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
+
+
+# --- ENV protection (v1.16) ---
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+<FilesMatch "^\.env\.example$">
+    Require all denied
+</FilesMatch>
+# -----------------------------

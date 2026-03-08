@@ -1,0 +1,7 @@
+# Ensure theme CSS files are accessible
+Options -Indexes
+<IfModule mod_authz_core.c>
+  Require all granted
+</IfModule>
+
+AddType text/css .css

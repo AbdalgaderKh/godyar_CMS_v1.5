@@ -1,0 +1,5 @@
+[08-Mar-2026 03:27:32 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting "elseif" or "else" or "endif" in /home/geqzylcq/public_html/install.php on line 929
+[08-Mar-2026 09:54:09 UTC] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in /home/geqzylcq/public_html/install.php on line 5
+[08-Mar-2026 09:54:10 UTC] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in /home/geqzylcq/public_html/install.php on line 5
+[08-Mar-2026 09:54:11 UTC] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in /home/geqzylcq/public_html/install.php on line 5
+[08-Mar-2026 09:54:12 UTC] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in /home/geqzylcq/public_html/install.php on line 5
